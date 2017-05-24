@@ -68,7 +68,6 @@ namespace CosmosDbSampleApp
             Title = "Add Person";
 
             Content = new ScrollView { Content = stackLayout };
-
         }
 
         protected override void SubscribeEventHandlers()
