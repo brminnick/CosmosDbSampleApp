@@ -1,13 +1,11 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp", "CosmosDbSampleApp\CosmosDbSampleApp.csproj", "{A2A41C39-5358-499D-9408-6BB6C6754064}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.iOS", "iOS\CosmosDbSampleApp.iOS.csproj", "{0D33938C-EB02-437F-A395-6BA569C7F6A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.Droid", "Droid\CosmosDbSampleApp.Droid.csproj", "{97D57FF9-B8E6-4C33-A10B-8A87063605F4}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CosmosDbSampleApp.Shared", "CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.shproj", "{2D6A6B1E-1EF5-439C-AA1B-1ED029AAF79E}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CosmosDbSampleApp", "CosmosDbSampleApp\CosmosDbSampleApp.shproj", "{50B95108-839D-4687-8379-46261BBDA927}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,18 +17,6 @@ Global
 		Debug|iPhone = Debug|iPhone
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Release|iPhone.Build.0 = Release|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{A2A41C39-5358-499D-9408-6BB6C6754064}.Debug|iPhone.Build.0 = Debug|Any CPU
 		{0D33938C-EB02-437F-A395-6BA569C7F6A1}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
 		{0D33938C-EB02-437F-A395-6BA569C7F6A1}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
 		{0D33938C-EB02-437F-A395-6BA569C7F6A1}.Release|Any CPU.ActiveCfg = Release|iPhone

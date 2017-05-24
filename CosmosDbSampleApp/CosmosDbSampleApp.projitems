@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{50B95108-839D-4687-8379-46261BBDA927}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CosmosDbSampleApp</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants\DocumentDbConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DebugHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Page\PersonListPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PersonListViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\PersonListTextCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\DocumentDbService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DocumentDbModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\PersonModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Page\AddPersonPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AddPersonViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\Base\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Page\Base\BaseContentPage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Models\" />
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModels\Base\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Page\Base\" />
+  </ItemGroup>
+</Project>

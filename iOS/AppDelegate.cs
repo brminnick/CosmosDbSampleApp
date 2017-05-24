@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using UIKit;
 using Foundation;
-using UIKit;
 
 namespace CosmosDbSampleApp.iOS
 {
@@ -13,6 +9,7 @@ namespace CosmosDbSampleApp.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+            EntryCustomReturn.Forms.Plugin.iOS.CustomReturnEntryRenderer.Init();
 
             LoadApplication(new App());
 

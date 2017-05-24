@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using System.Windows.Input;
 
 namespace CosmosDbSampleApp
 {
@@ -10,14 +11,17 @@ namespace CosmosDbSampleApp
     {
         #region Fields
         IList<PersonModel> _personList;
+        ICommand _pullToRefreshCommand;
         #endregion
 
-        #region Constructors
-        public PersonListViewModel() =>
-            Task.Run(async () => await UpdatePersonList());
+        #region Events
+        public event EventHandler PullToRefreshCompleted;
         #endregion
 
         #region Properties
+        public ICommand PullToRefreshCommand => _pullToRefreshCommand ??
+            (_pullToRefreshCommand = new Command(async () => await ExecutePullToRefreshCommand()));
+
         public IList<PersonModel> PersonList
         {
             get => _personList;
@@ -30,13 +34,23 @@ namespace CosmosDbSampleApp
         {
             try
             {
-                PersonList = await DependencyService.Get<IDocumentDbService>().GetAllPersonModels();
+                PersonList = await DocumentDbService.GetAllPersonModels();
             }
             catch (Exception e)
             {
                 DebugHelpers.PrintException(e);
             }
         }
+
+        async Task ExecutePullToRefreshCommand()
+        {
+            await UpdatePersonList();
+
+            OnPullToRefreshCompleted();
+        }
+
+        void OnPullToRefreshCompleted() =>
+            PullToRefreshCompleted?.Invoke(this, EventArgs.Empty);
         #endregion
     }
 }
