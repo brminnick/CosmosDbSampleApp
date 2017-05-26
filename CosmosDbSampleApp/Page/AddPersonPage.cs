@@ -34,24 +34,21 @@ namespace CosmosDbSampleApp
 
             var ageLabel = new Label { Text = "Age" };
 
-            var ageEntry = new CustomReturnEntry
+            var ageEntry = new AddPersonPageEntry
             {
                 Placeholder = "Age",
-                Keyboard = Keyboard.Numeric,
-                ReturnType = ReturnType.Default,
-                ReturnCommand = new Command(Unfocus)
+                Keyboard = Keyboard.Numeric
             };
             ageEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.AgeEntryText));
+            ageEntry.SetBinding(CustomReturnEffect.ReturnCommandProperty, nameof(ViewModel.SaveButtonCommand));
+            CustomReturnEffect.SetReturnType(ageEntry, ReturnType.Go);
 
             var nameLabel = new Label { Text = "Name" };
 
-            var nameEntry = new CustomReturnEntry
-            {
-                Placeholder = "Name",
-                ReturnType = ReturnType.Next,
-                ReturnCommand = new Command(() => ageEntry.Focus())
-            };
+            var nameEntry = new AddPersonPageEntry { Placeholder = "Name" };
             nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
+            CustomReturnEffect.SetReturnCommand(nameEntry, new Command(() => ageEntry.Focus()));
+            CustomReturnEffect.SetReturnType(nameEntry, ReturnType.Next);
 
             Padding = GetPageThickness();
 
@@ -74,7 +71,7 @@ namespace CosmosDbSampleApp
         {
             _cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
             ViewModel.SaveCompleted += HandleSaveCompleted;
-            ViewModel.Error += HandleError;
+            ViewModel.SaveError += HandleError;
         }
 
         protected override void UnsubscribeEventHandlers()
@@ -89,29 +86,21 @@ namespace CosmosDbSampleApp
         }
 
         void HandleError(object sender, string message)
-		{
-            Device.BeginInvokeOnMainThread(async () => 
-                                           await DisplayAlert("Error", message, "ok"));
-		}
-
-		void HandleSaveCompleted(object sender, EventArgs e)
-		{
-            PopPageFromNavigationStack();
-		}
-
-		void PopPageFromNavigationStack() => 
-            Device.BeginInvokeOnMainThread(async () =>
-										   await Navigation.PopModalAsync());
-
-        Thickness GetPageThickness()
         {
-            switch (Device.RuntimePlatform)
-            {
-                case Device.iOS:
-                    return new Thickness(20, 20, 20, 0);
-                default:
-                    return new Thickness(20, 0);
-            }
+            Device.BeginInvokeOnMainThread(async () =>
+                                           await DisplayAlert("Error", message, "ok"));
         }
+
+        void HandleSaveCompleted(object sender, EventArgs e)
+        {
+            PopPageFromNavigationStack();
+        }
+
+        void PopPageFromNavigationStack() =>
+            Device.BeginInvokeOnMainThread(async () =>
+                                           await Navigation.PopModalAsync());
+
+        Thickness GetPageThickness() => 
+            new Thickness(20, 20, 20, 0);
     }
 }

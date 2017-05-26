@@ -133,6 +133,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="CustomRenderers\AddPersonPageCustomRenderer.cs" />
+    <Compile Include="CustomRenderers\EntryClearButtonCustomRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Add%402x.png" />

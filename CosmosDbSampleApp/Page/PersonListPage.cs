@@ -16,7 +16,8 @@ namespace CosmosDbSampleApp
             _personList = new ListView
             {
                 ItemTemplate = new DataTemplate(typeof(PersonListTextCell)),
-                IsPullToRefreshEnabled = true
+                IsPullToRefreshEnabled = true,
+                BackgroundColor = ColorConstants.PageBackgroundColor
             };
             _personList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
             _personList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
@@ -54,7 +55,11 @@ namespace CosmosDbSampleApp
 
         void HandleAddButtonClicked(object sender, EventArgs e) =>
             Device.BeginInvokeOnMainThread(async () =>
-                await Navigation.PushModalAsync(new NavigationPage(new AddPersonPage())));
+                await Navigation.PushModalAsync(new NavigationPage(new AddPersonPage())
+        {
+            BarTextColor = ColorConstants.BarTextColor,
+            BarBackgroundColor = ColorConstants.BarBackgroundColor
+        }));
 
         void HandlePullToRefreshCommand(object sender, EventArgs e) =>
             Device.BeginInvokeOnMainThread(_personList.EndRefresh);

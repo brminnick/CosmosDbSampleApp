@@ -13,7 +13,7 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Events
-        public event EventHandler<string> Error;
+        public event EventHandler<string> SaveError;
         public event EventHandler SaveCompleted;
         #endregion
 
@@ -37,7 +37,13 @@ namespace CosmosDbSampleApp
         #region Methods
         async Task ExecuteSaveButtonCommand()
         {
-            int.TryParse(AgeEntryText, out var age);
+            var ageParseSucceeded = int.TryParse(AgeEntryText, out var age);
+            if (!ageParseSucceeded)
+            {
+                OnSaveError("Age Must Be A Number");
+                return;
+            }
+
             var person = new PersonModel
             {
                 Name = NameEntryText,
@@ -48,15 +54,17 @@ namespace CosmosDbSampleApp
 
             if (result != null)
                 OnSaveCompleted();
+            else if(DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
+                OnSaveError("Invalid DocumentDb Read/Write Key");
             else
-                OnError("Save Failed");
+                OnSaveError("Save Failed");
         }
 
         void OnSaveCompleted() =>
             SaveCompleted?.Invoke(this, EventArgs.Empty);
 
-        void OnError(string message) =>
-            Error?.Invoke(this, message);
+        void OnSaveError(string message) =>
+            SaveError?.Invoke(this, message);
         #endregion
     }
 }

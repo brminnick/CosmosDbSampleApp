@@ -14,6 +14,7 @@ namespace CosmosDbSampleApp
         static readonly Uri _documentCollectionUri = UriFactory.CreateDocumentCollectionUri(PersonModel.DatabaseId, PersonModel.CollectionId);
         #endregion
 
+        #region Methods
         public static async Task<List<PersonModel>> GetAllPersonModels()
         {
             return await Task.Run(() => _readonlyClient.CreateDocumentQuery<PersonModel>(_documentCollectionUri).ToList());
@@ -33,7 +34,7 @@ namespace CosmosDbSampleApp
         public static async Task<PersonModel> CreatePersonModel(PersonModel person)
         {
             if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
-                throw new Exception("Invalid Read/Write Primary Key");
+                return null;
 
             var readWriteClient = new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
 
@@ -44,5 +45,6 @@ namespace CosmosDbSampleApp
 
             return (PersonModel)result.Resource;
         }
+        #endregion
     }
 }
