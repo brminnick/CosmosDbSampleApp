@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -11,7 +11,6 @@ namespace CosmosDbSampleApp
     {
         #region Constant Fields
         static readonly DocumentClient _readonlyClient = new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadOnlyPrimaryKey);
-        static readonly DocumentClient _readWriteClient = new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
         static readonly Uri _documentCollectionUri = UriFactory.CreateDocumentCollectionUri(PersonModel.DatabaseId, PersonModel.CollectionId);
         #endregion
 
@@ -33,7 +32,12 @@ namespace CosmosDbSampleApp
 
         public static async Task<PersonModel> CreatePersonModel(PersonModel person)
         {
-            var result = await _readWriteClient.CreateDocumentAsync(_documentCollectionUri, person);
+            if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
+                throw new Exception("Invalid Read/Write Primary Key");
+
+            var readWriteClient = new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
+
+            var result = await readWriteClient.CreateDocumentAsync(_documentCollectionUri, person);
 
             if (result.StatusCode != System.Net.HttpStatusCode.Created)
                 return null;
