@@ -11,7 +11,7 @@ namespace CosmosDbSampleApp
         #region Constant Fields
         const string _saveToolBarItemText = "Save";
         const string _cancelToolBarItemText = "Cancel";
-
+        readonly AddPersonPageEntry _nameEntry;
         readonly ToolbarItem _cancelButtonToolbarItem;
         #endregion  
 
@@ -45,10 +45,10 @@ namespace CosmosDbSampleApp
 
             var nameLabel = new Label { Text = "Name" };
 
-            var nameEntry = new AddPersonPageEntry { Placeholder = "Name" };
-            nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
-            CustomReturnEffect.SetReturnCommand(nameEntry, new Command(() => ageEntry.Focus()));
-            CustomReturnEffect.SetReturnType(nameEntry, ReturnType.Next);
+            _nameEntry = new AddPersonPageEntry { Placeholder = "Name" };
+            _nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
+            CustomReturnEffect.SetReturnCommand(_nameEntry, new Command(() => ageEntry.Focus()));
+            CustomReturnEffect.SetReturnType(_nameEntry, ReturnType.Next);
 
             Padding = GetPageThickness();
 
@@ -56,7 +56,7 @@ namespace CosmosDbSampleApp
             {
                 Children ={
                     nameLabel,
-                    nameEntry,
+                    _nameEntry,
                     ageLabel,
                     ageEntry
                 }
@@ -65,6 +65,13 @@ namespace CosmosDbSampleApp
             Title = "Add Person";
 
             Content = new ScrollView { Content = stackLayout };
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            _nameEntry?.Focus();
         }
 
         protected override void SubscribeEventHandlers()

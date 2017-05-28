@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -22,8 +22,7 @@ namespace CosmosDbSampleApp
 
         public static async Task<PersonModel> GetPersonModel(string id)
         {
-            var result = await _readonlyClient.ReadDocumentAsync<PersonModel>(
-                UriFactory.CreateDocumentUri(PersonModel.DatabaseId, PersonModel.CollectionId, id));
+            var result = await _readonlyClient.ReadDocumentAsync<PersonModel>(CreateDocumentUri(id));
 
             if (result.StatusCode != System.Net.HttpStatusCode.Created)
                 return null;
@@ -33,18 +32,43 @@ namespace CosmosDbSampleApp
 
         public static async Task<PersonModel> CreatePersonModel(PersonModel person)
         {
-            if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
+            var readWriteClient = GetReadWriteDocumentClient();
+            if (readWriteClient == null)
                 return null;
 
-            var readWriteClient = new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
+            var result = await readWriteClient?.CreateDocumentAsync(_documentCollectionUri, person);
 
-            var result = await readWriteClient.CreateDocumentAsync(_documentCollectionUri, person);
-
-            if (result.StatusCode != System.Net.HttpStatusCode.Created)
+            if (result?.StatusCode != System.Net.HttpStatusCode.Created)
                 return null;
 
             return (PersonModel)result.Resource;
         }
+
+        public static async Task<PersonModel> DeletePersonModel(string id)
+        {
+            var readWriteClient = GetReadWriteDocumentClient();
+            if (readWriteClient == null)
+				return null;
+
+            var result = await readWriteClient?.DeleteDocumentAsync(CreateDocumentUri(id));
+
+            if (result?.StatusCode != System.Net.HttpStatusCode.Created)
+                return null;
+
+            return (PersonModel)result.Resource;
+        }
+
+        static Uri CreateDocumentUri(string id) =>
+            UriFactory.CreateDocumentUri(PersonModel.DatabaseId, PersonModel.CollectionId, id);
+
+        static DocumentClient GetReadWriteDocumentClient()
+        {
+            if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
+                return default(DocumentClient);
+
+            return new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
+        }
+
         #endregion
     }
 }

@@ -23,7 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Page\Base\BaseContentPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants\ColorConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\AddPerson\AddPersonPageEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\PersonList\PersonListTextCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\PersonList\PersonListViewCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Models\" />
