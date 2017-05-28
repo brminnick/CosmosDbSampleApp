@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Linq;
 
 using Xamarin.Forms;
 
@@ -76,19 +78,32 @@ namespace CosmosDbSampleApp
         {
             var personSelected = BindingContext as PersonModel;
 
-            var result = await DocumentDbService.DeletePersonModel(personSelected.Id);
+            HttpStatusCode result;
+            try
+            {
+                result = await DocumentDbService.DeletePersonModel(personSelected.Id);
 
-            if (result == null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Invalid DocumentDb Read/Write Key", "Ok");
+                if (result == default(HttpStatusCode))
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Invalid DocumentDb Read/Write Key", "Ok");
+                }
+                else if (result == HttpStatusCode.NoContent)
+                {
+                    var navigationPage = Application.Current.MainPage as NavigationPage;
+                    var personListPage = navigationPage.Navigation.NavigationStack.FirstOrDefault() as PersonListPage;
+                    var personListViewModel = personListPage.BindingContext as PersonListViewModel;
+
+                    personListViewModel?.PullToRefreshCommand?.Execute(null);
+                }
             }
-            else
+            catch (WebException ex)
             {
-                var navigationPage = Application.Current.MainPage as NavigationPage;
-                var addPersonPage = navigationPage.Navigation.ModalStack as AddPersonPage;
-                await addPersonPage.Navigation.PopModalAsync(true);
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
             }
-                
+            catch (Exception ex)
+            {
+                DebugHelpers.PrintException(ex);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -44,18 +45,15 @@ namespace CosmosDbSampleApp
             return (PersonModel)result.Resource;
         }
 
-        public static async Task<PersonModel> DeletePersonModel(string id)
+        public static async Task<HttpStatusCode> DeletePersonModel(string id)
         {
             var readWriteClient = GetReadWriteDocumentClient();
             if (readWriteClient == null)
-				return null;
+                return default (HttpStatusCode);
 
             var result = await readWriteClient?.DeleteDocumentAsync(CreateDocumentUri(id));
 
-            if (result?.StatusCode != System.Net.HttpStatusCode.Created)
-                return null;
-
-            return (PersonModel)result.Resource;
+            return result.StatusCode;
         }
 
         static Uri CreateDocumentUri(string id) =>
