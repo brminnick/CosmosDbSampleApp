@@ -16,6 +16,7 @@ namespace CosmosDbSampleApp
 
         #region Events
         public event EventHandler PullToRefreshCompleted;
+        public event EventHandler<string> Error;
         #endregion
 
         #region Properties
@@ -38,6 +39,7 @@ namespace CosmosDbSampleApp
             }
             catch (Exception e)
             {
+                OnError(e.InnerException.Message);
                 DebugHelpers.PrintException(e);
             }
         }
@@ -48,6 +50,9 @@ namespace CosmosDbSampleApp
 
             OnPullToRefreshCompleted();
         }
+
+        void OnError(string message) =>
+            Error?.Invoke(this, message);
 
         void OnPullToRefreshCompleted() =>
             PullToRefreshCompleted?.Invoke(this, EventArgs.Empty);

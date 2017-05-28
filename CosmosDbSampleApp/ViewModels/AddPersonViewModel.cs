@@ -50,14 +50,27 @@ namespace CosmosDbSampleApp
                 Age = age
             };
 
-            var result = await DocumentDbService.CreatePersonModel(person);
+            try
+            {
+                var result = await DocumentDbService.CreatePersonModel(person);
 
-            if (result != null)
-                OnSaveCompleted();
-            else if(DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
-                OnSaveError("Invalid DocumentDb Read/Write Key");
-            else
-                OnSaveError("Save Failed");
+                if (result != null)
+                    OnSaveCompleted();
+                else if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
+                    OnSaveError("Invalid DocumentDb Read/Write Key");
+                else
+                    OnSaveError("Save Failed");
+            }
+            catch(System.Net.WebException e)
+            {
+                OnSaveError(e.Message);
+                DebugHelpers.PrintException(e);
+            }
+			catch (Exception e)
+			{
+				OnSaveError(e.Message);
+				DebugHelpers.PrintException(e);
+			}
         }
 
         void OnSaveCompleted() =>

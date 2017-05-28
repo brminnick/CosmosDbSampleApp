@@ -13,11 +13,12 @@ namespace CosmosDbSampleApp
             _addButtonToolBarItem = new ToolbarItem { Icon = "Add" };
             ToolbarItems.Add(_addButtonToolBarItem);
 
-            _personList = new ListView
+            _personList = new ListView(ListViewCachingStrategy.RecycleElement)
             {
-                ItemTemplate = new DataTemplate(typeof(PersonListTextCell)),
+                ItemTemplate = new DataTemplate(typeof(PersonListViewCell)),
                 IsPullToRefreshEnabled = true,
-                BackgroundColor = ColorConstants.PageBackgroundColor
+                BackgroundColor = ColorConstants.PageBackgroundColor,
+                HasUnevenRows = true
             };
             _personList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
             _personList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
@@ -36,6 +37,7 @@ namespace CosmosDbSampleApp
 
         protected override void SubscribeEventHandlers()
         {
+			ViewModel.Error += HandleError;
             _personList.ItemTapped += HandleItemTapped;
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
             ViewModel.PullToRefreshCompleted += HandlePullToRefreshCommand;
@@ -43,9 +45,14 @@ namespace CosmosDbSampleApp
 
         protected override void UnsubscribeEventHandlers()
         {
-            _personList.ItemTapped -= HandleItemTapped;
-            _addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
+            ViewModel.Error -= HandleError;
+			_personList.ItemTapped -= HandleItemTapped;
+			_addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
+            ViewModel.PullToRefreshCompleted -= HandlePullToRefreshCommand;
         }
+
+        void HandleError(object sender, string e) =>
+            Device.BeginInvokeOnMainThread(async ()=> await DisplayAlert("Error", e, "OK "));
 
         void HandleItemTapped(object sender, ItemTappedEventArgs e)
         {
