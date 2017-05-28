@@ -7,8 +7,23 @@ namespace CosmosDbSampleApp
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Fields
+        bool _isInternetConnectionActive;
+        #endregion
 
+        #region Events
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        #region Properties
+        public bool IsInternetConnectionActive
+        {
+            get => _isInternetConnectionActive;
+            set => SetProperty(ref _isInternetConnectionActive, value);
+        }
+        #endregion
+
+        #region Methods
         protected void SetProperty<T>(ref T backingStore, T value, Action onChanged = null, [CallerMemberName] string propertyname = "")
         {
             if (EqualityComparer<T>.Default.Equals(backingStore, value))
@@ -23,5 +38,6 @@ namespace CosmosDbSampleApp
 
         void OnPropertyChanged([CallerMemberName]string name = "") =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        #endregion
     }
 }

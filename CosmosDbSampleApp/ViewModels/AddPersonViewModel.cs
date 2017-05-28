@@ -37,10 +37,13 @@ namespace CosmosDbSampleApp
         #region Methods
         async Task ExecuteSaveButtonCommand()
         {
+            if (IsInternetConnectionActive)
+                return;
+
             var ageParseSucceeded = int.TryParse(AgeEntryText, out var age);
             if (!ageParseSucceeded)
             {
-                OnSaveError("Age Must Be A Number");
+                OnSaveError("Age Must Be A Whole Number");
                 return;
             }
 
@@ -49,6 +52,8 @@ namespace CosmosDbSampleApp
                 Name = NameEntryText,
                 Age = age
             };
+
+            IsInternetConnectionActive = true;
 
             try
             {
@@ -71,10 +76,17 @@ namespace CosmosDbSampleApp
 				OnSaveError(e.Message);
 				DebugHelpers.PrintException(e);
 			}
+            finally
+            {
+                IsInternetConnectionActive = false;
+            }
         }
 
-        void OnSaveCompleted() =>
+        void OnSaveCompleted()
+        {
+            IsInternetConnectionActive = false;
             SaveCompleted?.Invoke(this, EventArgs.Empty);
+        }
 
         void OnSaveError(string message) =>
             SaveError?.Invoke(this, message);

@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Constants\ColorConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\AddPerson\AddPersonPageEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\PersonList\PersonListViewCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\InverseBoolConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Models\" />
@@ -31,5 +32,6 @@
     <Folder Include="$(MSBuildThisFileDirectory)Page\Base\" />
     <Folder Include="$(MSBuildThisFileDirectory)Views\AddPerson\" />
     <Folder Include="$(MSBuildThisFileDirectory)Views\PersonList\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Converters\" />
   </ItemGroup>
 </Project>

@@ -8,9 +8,17 @@ namespace CosmosDbSampleApp
 {
     public class PersonListViewCell : ViewCell
     {
+        #region Constant Fields
         readonly Label _titleLabel, _descriptionLabel;
         readonly MenuItem _deleteAction;
+        #endregion
 
+        #region Fields
+        PersonListPage _personListPage;
+        PersonListViewModel _personListViewModel;
+        #endregion
+
+        #region Constructors
         public PersonListViewCell()
         {
             _titleLabel = new Label
@@ -47,7 +55,17 @@ namespace CosmosDbSampleApp
 
             View = gridLayout;
         }
+        #endregion
 
+        #region Properties
+        PersonListPage PersonListPage => _personListPage ??
+            (_personListPage = GetPersonListPage());
+
+        PersonListViewModel PersonListViewModel => _personListViewModel ??
+            (_personListViewModel = GetPersonListViewModel());
+        #endregion
+
+        #region Methods
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -78,23 +96,23 @@ namespace CosmosDbSampleApp
         {
             var personSelected = BindingContext as PersonModel;
 
+            if (PersonListViewModel?.IsInternetConnectionActive ?? false)
+            {
+                await Application.Current.MainPage.DisplayAlert("Delete Failed", "Previous Delete Request In Progress", "Ok");
+                return;
+            }
+
+            PersonListViewModel.IsInternetConnectionActive = true;
+
             HttpStatusCode result;
             try
             {
                 result = await DocumentDbService.DeletePersonModel(personSelected.Id);
 
                 if (result == default(HttpStatusCode))
-                {
                     await Application.Current.MainPage.DisplayAlert("Error", "Invalid DocumentDb Read/Write Key", "Ok");
-                }
                 else if (result == HttpStatusCode.NoContent)
-                {
-                    var navigationPage = Application.Current.MainPage as NavigationPage;
-                    var personListPage = navigationPage.Navigation.NavigationStack.FirstOrDefault() as PersonListPage;
-                    var personListViewModel = personListPage.BindingContext as PersonListViewModel;
-
-                    personListViewModel?.PullToRefreshCommand?.Execute(null);
-                }
+                    Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList?.BeginRefresh());
             }
             catch (WebException ex)
             {
@@ -104,6 +122,25 @@ namespace CosmosDbSampleApp
             {
                 DebugHelpers.PrintException(ex);
             }
+            finally
+            {
+                PersonListViewModel.IsInternetConnectionActive = false;
+            }
         }
+
+        PersonListViewModel GetPersonListViewModel()
+        {
+            var navigationPage = Application.Current.MainPage as NavigationPage;
+            var personListPage = navigationPage.Navigation.NavigationStack.FirstOrDefault() as PersonListPage;
+
+            return personListPage.BindingContext as PersonListViewModel;
+        }
+
+        PersonListPage GetPersonListPage()
+        {
+            var navigationPage = Application.Current.MainPage as NavigationPage;
+            return navigationPage.Navigation.NavigationStack.FirstOrDefault() as PersonListPage;
+        }
+        #endregion
     }
 }

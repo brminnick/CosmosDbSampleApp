@@ -9,8 +9,8 @@ namespace CosmosDbSampleApp
     public class AddPersonPage : BaseContentPage<AddPersonViewModel>
     {
         #region Constant Fields
-        const string _saveToolBarItemText = "Save";
-        const string _cancelToolBarItemText = "Cancel";
+        const string _saveButtonToolBarItemText = "Save";
+        const string _cancelButtonToolBarItemText = "Cancel";
         readonly AddPersonPageEntry _nameEntry;
         readonly ToolbarItem _cancelButtonToolbarItem;
         #endregion  
@@ -19,15 +19,15 @@ namespace CosmosDbSampleApp
         {
             var saveButtonToolBar = new ToolbarItem
             {
-                Text = _saveToolBarItemText,
+                Text = _saveButtonToolBarItemText,
                 Priority = 0,
             };
             saveButtonToolBar.SetBinding(ToolbarItem.CommandProperty, nameof(ViewModel.SaveButtonCommand));
             ToolbarItems.Add(saveButtonToolBar);
 
-            _cancelButtonToolbarItem = new ToolbarItem
+			_cancelButtonToolbarItem = new ToolbarItem
             {
-                Text = _cancelToolBarItemText,
+                Text = _cancelButtonToolBarItemText,
                 Priority = 1
             };
             ToolbarItems.Add(_cancelButtonToolbarItem);
@@ -41,14 +41,20 @@ namespace CosmosDbSampleApp
             };
             ageEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.AgeEntryText));
             ageEntry.SetBinding(CustomReturnEffect.ReturnCommandProperty, nameof(ViewModel.SaveButtonCommand));
+            ageEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsInternetConnectionActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsInternetConnectionActive));
             CustomReturnEffect.SetReturnType(ageEntry, ReturnType.Go);
 
             var nameLabel = new Label { Text = "Name" };
 
             _nameEntry = new AddPersonPageEntry { Placeholder = "Name" };
             _nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
+            _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsInternetConnectionActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsInternetConnectionActive));
             CustomReturnEffect.SetReturnCommand(_nameEntry, new Command(() => ageEntry.Focus()));
             CustomReturnEffect.SetReturnType(_nameEntry, ReturnType.Next);
+
+            var activityIndicator = new ActivityIndicator();
+            activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsInternetConnectionActive));
+            activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsInternetConnectionActive));
 
             Padding = GetPageThickness();
 
@@ -58,7 +64,8 @@ namespace CosmosDbSampleApp
                     nameLabel,
                     _nameEntry,
                     ageLabel,
-                    ageEntry
+                    ageEntry,
+                    activityIndicator
                 }
             };
 
@@ -89,6 +96,9 @@ namespace CosmosDbSampleApp
 
         void HandleCancelButtonToolbarItemClicked(object sender, EventArgs e)
         {
+            if (ViewModel.IsInternetConnectionActive)
+                return;
+            
             PopPageFromNavigationStack();
         }
 
@@ -107,7 +117,7 @@ namespace CosmosDbSampleApp
             Device.BeginInvokeOnMainThread(async () =>
                                            await Navigation.PopModalAsync());
 
-        Thickness GetPageThickness() => 
+        Thickness GetPageThickness() =>
             new Thickness(20, 20, 20, 0);
     }
 }

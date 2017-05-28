@@ -35,12 +35,17 @@ namespace CosmosDbSampleApp
         {
             try
             {
+                IsInternetConnectionActive = true;
                 PersonList = await DocumentDbService.GetAllPersonModels();
             }
             catch (Exception e)
             {
                 OnError(e.InnerException.Message);
                 DebugHelpers.PrintException(e);
+            }
+            finally
+            {
+                IsInternetConnectionActive = false;
             }
         }
 

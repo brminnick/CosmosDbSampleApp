@@ -1,13 +1,17 @@
 ﻿using System;
+
 using Xamarin.Forms;
 
 namespace CosmosDbSampleApp
 {
     public class PersonListPage : BaseContentPage<PersonListViewModel>
     {
+        #region Constant Fields
         readonly ListView _personList;
         readonly ToolbarItem _addButtonToolBarItem;
+        #endregion
 
+        #region Constructors
         public PersonListPage()
         {
             _addButtonToolBarItem = new ToolbarItem { Icon = "Add" };
@@ -27,7 +31,13 @@ namespace CosmosDbSampleApp
 
             Title = "Person List";
         }
+        #endregion
 
+        #region Properties
+        public ListView PersonList => _personList;
+        #endregion
+
+        #region Methods
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -37,7 +47,7 @@ namespace CosmosDbSampleApp
 
         protected override void SubscribeEventHandlers()
         {
-			ViewModel.Error += HandleError;
+            ViewModel.Error += HandleError;
             _personList.ItemTapped += HandleItemTapped;
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
             ViewModel.PullToRefreshCompleted += HandlePullToRefreshCommand;
@@ -46,13 +56,13 @@ namespace CosmosDbSampleApp
         protected override void UnsubscribeEventHandlers()
         {
             ViewModel.Error -= HandleError;
-			_personList.ItemTapped -= HandleItemTapped;
-			_addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
+            _personList.ItemTapped -= HandleItemTapped;
+            _addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
             ViewModel.PullToRefreshCompleted -= HandlePullToRefreshCommand;
         }
 
         void HandleError(object sender, string e) =>
-            Device.BeginInvokeOnMainThread(async ()=> await DisplayAlert("Error", e, "OK "));
+            Device.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", e, "OK "));
 
         void HandleItemTapped(object sender, ItemTappedEventArgs e)
         {
@@ -63,12 +73,13 @@ namespace CosmosDbSampleApp
         void HandleAddButtonClicked(object sender, EventArgs e) =>
             Device.BeginInvokeOnMainThread(async () =>
                 await Navigation.PushModalAsync(new NavigationPage(new AddPersonPage())
-        {
-            BarTextColor = ColorConstants.BarTextColor,
-            BarBackgroundColor = ColorConstants.BarBackgroundColor
-        }));
+                {
+                    BarTextColor = ColorConstants.BarTextColor,
+                    BarBackgroundColor = ColorConstants.BarBackgroundColor
+                }));
 
         void HandlePullToRefreshCommand(object sender, EventArgs e) =>
             Device.BeginInvokeOnMainThread(_personList.EndRefresh);
+        #endregion
     }
 }
