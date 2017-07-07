@@ -25,7 +25,7 @@ namespace CosmosDbSampleApp
         {
             var result = await _readonlyClient.ReadDocumentAsync<PersonModel>(CreateDocumentUri(id));
 
-            if (result.StatusCode != System.Net.HttpStatusCode.Created)
+            if (result.StatusCode != HttpStatusCode.Created)
                 return null;
 
             return result;
@@ -39,7 +39,7 @@ namespace CosmosDbSampleApp
 
             var result = await readWriteClient?.CreateDocumentAsync(_documentCollectionUri, person);
 
-            if (result?.StatusCode != System.Net.HttpStatusCode.Created)
+            if (result?.StatusCode != HttpStatusCode.Created)
                 return null;
 
             return (PersonModel)result.Resource;
@@ -49,7 +49,7 @@ namespace CosmosDbSampleApp
         {
             var readWriteClient = GetReadWriteDocumentClient();
             if (readWriteClient == null)
-                return default (HttpStatusCode);
+                return default(HttpStatusCode);
 
             var result = await readWriteClient?.DeleteDocumentAsync(CreateDocumentUri(id));
 

@@ -33,6 +33,8 @@ namespace CosmosDbSampleApp
                 Text = "Delete",
                 IsDestructive = true
             };
+            _deleteAction.Clicked += HandleDeleteClicked;
+            ContextActions.Add(_deleteAction);
 
             var gridLayout = new Grid
             {
@@ -57,6 +59,14 @@ namespace CosmosDbSampleApp
         }
         #endregion
 
+        #region Finalizers
+        ~PersonListViewCell()
+        {
+            ContextActions.Remove(_deleteAction);
+            _deleteAction.Clicked -= HandleDeleteClicked;
+        }
+        #endregion
+
         #region Properties
         PersonListPage PersonListPage => _personListPage ??
             (_personListPage = GetPersonListPage());
@@ -66,21 +76,6 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Methods
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            _deleteAction.Clicked += HandleDeleteClicked;
-            ContextActions.Add(_deleteAction);
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-
-            _deleteAction.Clicked -= HandleDeleteClicked;
-            ContextActions.Remove(_deleteAction);
-        }
 
         protected override void OnBindingContextChanged()
         {
