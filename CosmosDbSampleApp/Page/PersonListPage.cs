@@ -27,7 +27,33 @@ namespace CosmosDbSampleApp
             _personList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
             _personList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
 
-            Content = _personList;
+            var activityIndicator = new ActivityIndicator();
+            activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsDeletingPerson));
+            activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsDeletingPerson));
+
+            var whiteOverlayBoxView = new BoxView { BackgroundColor = new Color(1, 1, 1, 0.75) };
+            whiteOverlayBoxView.SetBinding(IsVisibleProperty, nameof(ViewModel.IsDeletingPerson));
+
+            var relativeLayout = new RelativeLayout();
+
+            Func<RelativeLayout, double> getActivityIndicatorWidth = (p) => activityIndicator.Measure(p.Width, p.Height).Request.Width;
+            Func<RelativeLayout, double> getActivityIndicatorHeight = (p) => activityIndicator.Measure(p.Width, p.Height).Request.Height;
+
+            relativeLayout.Children.Add(_personList,
+                                       Constraint.Constant(0),
+                                       Constraint.Constant(0));
+
+            relativeLayout.Children.Add(whiteOverlayBoxView,
+                                       Constraint.Constant(0),
+                                       Constraint.Constant(0),
+                                       Constraint.RelativeToParent(parent => parent.Width),
+                                       Constraint.RelativeToParent(parent => parent.Height));
+
+            relativeLayout.Children.Add(activityIndicator,
+                                       Constraint.RelativeToParent(parent => parent.Width / 2 - getActivityIndicatorWidth(parent) / 2),
+                                       Constraint.RelativeToParent(parent => parent.Height / 2 - getActivityIndicatorHeight(parent) / 2));
+
+            Content = relativeLayout;
 
             Title = "Person List";
         }

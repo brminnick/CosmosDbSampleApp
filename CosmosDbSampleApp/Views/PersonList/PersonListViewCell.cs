@@ -98,6 +98,7 @@ namespace CosmosDbSampleApp
             }
 
             PersonListViewModel.IsInternetConnectionActive = true;
+            PersonListViewModel.IsDeletingPerson = true;
 
             HttpStatusCode result;
             try
@@ -120,6 +121,7 @@ namespace CosmosDbSampleApp
             finally
             {
                 PersonListViewModel.IsInternetConnectionActive = false;
+                PersonListViewModel.IsDeletingPerson = false;
             }
         }
 

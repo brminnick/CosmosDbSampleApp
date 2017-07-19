@@ -10,6 +10,7 @@ namespace CosmosDbSampleApp
     public class PersonListViewModel : BaseViewModel
     {
         #region Fields
+        bool _isDeletingPerson;
         IList<PersonModel> _personList;
         ICommand _pullToRefreshCommand;
         #endregion
@@ -27,6 +28,12 @@ namespace CosmosDbSampleApp
         {
             get => _personList;
             set => SetProperty(ref _personList, value);
+        }
+
+        public bool IsDeletingPerson
+        {
+            get => _isDeletingPerson;
+            set => SetProperty(ref _isDeletingPerson, value);
         }
         #endregion
 
