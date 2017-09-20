@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Xamarin.Forms;
-using System.Windows.Input;
 
 namespace CosmosDbSampleApp
 {
