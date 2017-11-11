@@ -16,10 +16,8 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Methods
-        public static async Task<List<PersonModel>> GetAllPersonModels()
-        {
-            return await Task.Run(() => _readonlyClient.CreateDocumentQuery<PersonModel>(_documentCollectionUri).ToList());
-        }
+        public static Task<List<PersonModel>> GetAllPersonModels() =>
+            Task.Run(() => _readonlyClient.CreateDocumentQuery<PersonModel>(_documentCollectionUri).ToList());
 
         public static async Task<PersonModel> GetPersonModel(string id)
         {

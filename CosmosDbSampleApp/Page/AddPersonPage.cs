@@ -25,7 +25,7 @@ namespace CosmosDbSampleApp
             saveButtonToolBar.SetBinding(ToolbarItem.CommandProperty, nameof(ViewModel.SaveButtonCommand));
             ToolbarItems.Add(saveButtonToolBar);
 
-			_cancelButtonToolbarItem = new ToolbarItem
+            _cancelButtonToolbarItem = new ToolbarItem
             {
                 Text = _cancelButtonToolBarItemText,
                 Priority = 1
@@ -98,7 +98,7 @@ namespace CosmosDbSampleApp
         {
             if (ViewModel.IsInternetConnectionActive)
                 return;
-            
+
             PopPageFromNavigationStack();
         }
 
@@ -108,16 +108,12 @@ namespace CosmosDbSampleApp
                                            await DisplayAlert("Error", message, "ok"));
         }
 
-        void HandleSaveCompleted(object sender, EventArgs e)
-        {
-            PopPageFromNavigationStack();
-        }
+        void HandleSaveCompleted(object sender, EventArgs e) => PopPageFromNavigationStack();
 
         void PopPageFromNavigationStack() =>
             Device.BeginInvokeOnMainThread(async () =>
                                            await Navigation.PopModalAsync());
 
-        Thickness GetPageThickness() =>
-            new Thickness(20, 20, 20, 0);
+        Thickness GetPageThickness() => new Thickness(20, 20, 20, 0);
     }
 }
