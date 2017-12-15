@@ -10,13 +10,12 @@ namespace CosmosDbSampleApp
     public class PersonListViewModel : BaseViewModel
     {
         #region Fields
-        bool _isDeletingPerson;
+        bool _isDeletingPerson, _isRefreshing;
         IList<PersonModel> _personList;
         ICommand _pullToRefreshCommand;
         #endregion
 
         #region Events
-        public event EventHandler PullToRefreshCompleted;
         public event EventHandler<string> Error;
         #endregion
 
@@ -35,14 +34,22 @@ namespace CosmosDbSampleApp
             get => _isDeletingPerson;
             set => SetProperty(ref _isDeletingPerson, value);
         }
+
+        public bool IsRefreshing
+        {
+            get => _isRefreshing;
+            set => SetProperty(ref _isRefreshing, value);
+        }
         #endregion
 
         #region Methods
+        Task ExecutePullToRefreshCommand() => UpdatePersonList();
+
         async Task UpdatePersonList()
         {
             try
             {
-                IsInternetConnectionActive = true;
+                IsRefreshing = IsInternetConnectionActive = true;
                 PersonList = await DocumentDbService.GetAllPersonModels();
             }
             catch (Exception e)
@@ -52,22 +59,11 @@ namespace CosmosDbSampleApp
             }
             finally
             {
-                IsInternetConnectionActive = false;
+                IsRefreshing = IsInternetConnectionActive = false;
             }
         }
 
-        async Task ExecutePullToRefreshCommand()
-        {
-            await UpdatePersonList();
-
-            OnPullToRefreshCompleted();
-        }
-
-        void OnError(string message) =>
-            Error?.Invoke(this, message);
-
-        void OnPullToRefreshCompleted() =>
-            PullToRefreshCompleted?.Invoke(this, EventArgs.Empty);
+        void OnError(string message) => Error?.Invoke(this, message);
         #endregion
     }
 }

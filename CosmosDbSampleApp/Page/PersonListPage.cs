@@ -24,6 +24,7 @@ namespace CosmosDbSampleApp
                 BackgroundColor = ColorConstants.PageBackgroundColor,
                 HasUnevenRows = true
             };
+            _personList.SetBinding(ListView.IsRefreshingProperty, nameof(ViewModel.IsRefreshing));
             _personList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
             _personList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
 
@@ -76,7 +77,6 @@ namespace CosmosDbSampleApp
             ViewModel.Error += HandleError;
             _personList.ItemTapped += HandleItemTapped;
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
-            ViewModel.PullToRefreshCompleted += HandlePullToRefreshCommand;
         }
 
         protected override void UnsubscribeEventHandlers()
@@ -84,7 +84,6 @@ namespace CosmosDbSampleApp
             ViewModel.Error -= HandleError;
             _personList.ItemTapped -= HandleItemTapped;
             _addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
-            ViewModel.PullToRefreshCompleted -= HandlePullToRefreshCommand;
         }
 
         void HandleError(object sender, string e) =>
@@ -103,9 +102,6 @@ namespace CosmosDbSampleApp
                     BarTextColor = ColorConstants.BarTextColor,
                     BarBackgroundColor = ColorConstants.BarBackgroundColor
                 }));
-
-        void HandlePullToRefreshCommand(object sender, EventArgs e) =>
-            Device.BeginInvokeOnMainThread(_personList.EndRefresh);
         #endregion
     }
 }
