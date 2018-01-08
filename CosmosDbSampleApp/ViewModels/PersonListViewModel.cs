@@ -16,7 +16,7 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Events
-        public event EventHandler<string> Error;
+        public event EventHandler<string> ErrorTriggered;
         #endregion
 
         #region Properties
@@ -49,8 +49,8 @@ namespace CosmosDbSampleApp
         {
             try
             {
-                IsRefreshing = IsInternetConnectionActive = true;
-                PersonList = await DocumentDbService.GetAllPersonModels();
+                IsRefreshing = true;
+                PersonList = await DocumentDbService.GetAll<PersonModel>();
             }
             catch (Exception e)
             {
@@ -59,11 +59,11 @@ namespace CosmosDbSampleApp
             }
             finally
             {
-                IsRefreshing = IsInternetConnectionActive = false;
+                IsRefreshing = false;
             }
         }
 
-        void OnError(string message) => Error?.Invoke(this, message);
+        void OnError(string message) => ErrorTriggered?.Invoke(this, message);
         #endregion
     }
 }

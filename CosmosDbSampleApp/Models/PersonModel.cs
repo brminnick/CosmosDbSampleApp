@@ -2,7 +2,7 @@
 
 namespace CosmosDbSampleApp
 {
-    public class PersonModel : DocumentDbModel<PersonModel>
+    public class PersonModel : CosmosDbModel<PersonModel>
     {
         public string Name { get; set; }
         public int Age { get; set; }

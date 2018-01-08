@@ -91,19 +91,18 @@ namespace CosmosDbSampleApp
         {
             var personSelected = BindingContext as PersonModel;
 
-            if (PersonListViewModel?.IsInternetConnectionActive ?? false)
+            if (PersonListViewModel?.IsDeletingPerson ?? false)
             {
                 await Application.Current.MainPage.DisplayAlert("Delete Failed", "Previous Delete Request In Progress", "Ok");
                 return;
             }
 
-            PersonListViewModel.IsInternetConnectionActive = true;
             PersonListViewModel.IsDeletingPerson = true;
 
             HttpStatusCode result;
             try
             {
-                result = await DocumentDbService.DeletePersonModel(personSelected.Id);
+                result = await DocumentDbService.Delete(personSelected.Id);
 
                 if (result == default(HttpStatusCode))
                     await Application.Current.MainPage.DisplayAlert("Error", "Invalid DocumentDb Read/Write Key", "Ok");
@@ -120,7 +119,6 @@ namespace CosmosDbSampleApp
             }
             finally
             {
-                PersonListViewModel.IsInternetConnectionActive = false;
                 PersonListViewModel.IsDeletingPerson = false;
             }
         }

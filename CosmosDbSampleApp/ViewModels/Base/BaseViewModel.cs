@@ -7,20 +7,8 @@ namespace CosmosDbSampleApp
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        #region Fields
-        bool _isInternetConnectionActive;
-        #endregion
-
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
-
-        #region Properties
-        public bool IsInternetConnectionActive
-        {
-            get => _isInternetConnectionActive;
-            set => SetProperty(ref _isInternetConnectionActive, value);
-        }
         #endregion
 
         #region Methods
@@ -36,8 +24,7 @@ namespace CosmosDbSampleApp
             OnPropertyChanged(propertyname);
         }
 
-        void OnPropertyChanged([CallerMemberName]string name = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        void OnPropertyChanged([CallerMemberName]string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         #endregion
     }
 }

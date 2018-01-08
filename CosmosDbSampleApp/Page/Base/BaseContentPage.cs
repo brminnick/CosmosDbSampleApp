@@ -13,8 +13,6 @@ namespace CosmosDbSampleApp
         {
             BindingContext = ViewModel;
             BackgroundColor = Color.FromHex("F8E28B");
-
-            this.SetBinding(IsBusyProperty, nameof(ViewModel.IsInternetConnectionActive));
         }
         #endregion
 

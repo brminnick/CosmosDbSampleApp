@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Threading.Tasks;
+
 using Xamarin.Forms;
 
 namespace CosmosDbSampleApp
@@ -10,10 +11,11 @@ namespace CosmosDbSampleApp
         #region Fields
         ICommand _saveButtonCommand;
         string _ageEntryText, _nameEntryText;
+        bool _isActivityIndicatorActive;
         #endregion
 
         #region Events
-        public event EventHandler<string> SaveError;
+        public event EventHandler<string> SaveErrorred;
         public event EventHandler SaveCompleted;
         #endregion
 
@@ -32,14 +34,17 @@ namespace CosmosDbSampleApp
             get => _nameEntryText;
             set => SetProperty(ref _nameEntryText, value);
         }
+
+        public bool IsActivityIndicatorActive
+        {
+            get => _isActivityIndicatorActive;
+            set => SetProperty(ref _isActivityIndicatorActive, value);
+        }
         #endregion
 
         #region Methods
         async Task ExecuteSaveButtonCommand()
         {
-            if (IsInternetConnectionActive)
-                return;
-
             var ageParseSucceeded = int.TryParse(AgeEntryText, out var age);
             if (!ageParseSucceeded)
             {
@@ -53,11 +58,11 @@ namespace CosmosDbSampleApp
                 Age = age
             };
 
-            IsInternetConnectionActive = true;
+            IsActivityIndicatorActive = true;
 
             try
             {
-                var result = await DocumentDbService.CreatePersonModel(person);
+                var result = await DocumentDbService.Create(person);
 
                 if (result != null)
                     OnSaveCompleted();
@@ -66,30 +71,24 @@ namespace CosmosDbSampleApp
                 else
                     OnSaveError("Save Failed");
             }
-            catch(System.Net.WebException e)
+            catch (System.Net.WebException e)
             {
                 OnSaveError(e.Message);
                 DebugHelpers.PrintException(e);
             }
-			catch (Exception e)
-			{
-				OnSaveError(e.Message);
-				DebugHelpers.PrintException(e);
-			}
+            catch (Exception e)
+            {
+                OnSaveError(e.Message);
+                DebugHelpers.PrintException(e);
+            }
             finally
             {
-                IsInternetConnectionActive = false;
+                IsActivityIndicatorActive = false;
             }
         }
 
-        void OnSaveCompleted()
-        {
-            IsInternetConnectionActive = false;
-            SaveCompleted?.Invoke(this, EventArgs.Empty);
-        }
-
-        void OnSaveError(string message) =>
-            SaveError?.Invoke(this, message);
+        void OnSaveCompleted() => SaveCompleted?.Invoke(this, EventArgs.Empty);
+        void OnSaveError(string message) => SaveErrorred?.Invoke(this, message);
         #endregion
     }
 }

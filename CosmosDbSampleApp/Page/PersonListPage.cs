@@ -74,19 +74,19 @@ namespace CosmosDbSampleApp
 
         protected override void SubscribeEventHandlers()
         {
-            ViewModel.Error += HandleError;
             _personList.ItemTapped += HandleItemTapped;
+			ViewModel.ErrorTriggered += HandleErrorTriggered;
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
         }
 
         protected override void UnsubscribeEventHandlers()
         {
-            ViewModel.Error -= HandleError;
             _personList.ItemTapped -= HandleItemTapped;
+			ViewModel.ErrorTriggered -= HandleErrorTriggered;
             _addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
         }
 
-        void HandleError(object sender, string e) =>
+        void HandleErrorTriggered(object sender, string e) =>
             Device.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", e, "OK "));
 
         void HandleItemTapped(object sender, ItemTappedEventArgs e)
@@ -95,13 +95,15 @@ namespace CosmosDbSampleApp
             listView.SelectedItem = null;
         }
 
-        void HandleAddButtonClicked(object sender, EventArgs e) =>
+        void HandleAddButtonClicked(object sender, EventArgs e)
+        {
             Device.BeginInvokeOnMainThread(async () =>
                 await Navigation.PushModalAsync(new NavigationPage(new AddPersonPage())
                 {
                     BarTextColor = ColorConstants.BarTextColor,
                     BarBackgroundColor = ColorConstants.BarBackgroundColor
                 }));
+        }
         #endregion
     }
 }

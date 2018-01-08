@@ -13,6 +13,7 @@ namespace CosmosDbSampleApp
         const string _cancelButtonToolBarItemText = "Cancel";
         readonly AddPersonPageEntry _nameEntry;
         readonly ToolbarItem _cancelButtonToolbarItem;
+        readonly ActivityIndicator _activityIndicator;
         #endregion  
 
         public AddPersonPage()
@@ -52,9 +53,9 @@ namespace CosmosDbSampleApp
             CustomReturnEffect.SetReturnCommand(_nameEntry, new Command(() => ageEntry.Focus()));
             CustomReturnEffect.SetReturnType(_nameEntry, ReturnType.Next);
 
-            var activityIndicator = new ActivityIndicator();
-            activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsInternetConnectionActive));
-            activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsInternetConnectionActive));
+            _activityIndicator = new ActivityIndicator();
+            _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsInternetConnectionActive));
+            _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsInternetConnectionActive));
 
             Padding = GetPageThickness();
 
@@ -83,20 +84,21 @@ namespace CosmosDbSampleApp
 
         protected override void SubscribeEventHandlers()
         {
-            _cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
+			ViewModel.SaveErrorred += HandleError;
             ViewModel.SaveCompleted += HandleSaveCompleted;
-            ViewModel.SaveError += HandleError;
+			_cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
         }
 
         protected override void UnsubscribeEventHandlers()
         {
+            ViewModel.SaveErrorred -= HandleError;
+			ViewModel.SaveCompleted += HandleSaveCompleted;
             _cancelButtonToolbarItem.Clicked -= HandleCancelButtonToolbarItemClicked;
-            ViewModel.SaveCompleted += HandleSaveCompleted;
         }
 
         void HandleCancelButtonToolbarItemClicked(object sender, EventArgs e)
         {
-            if (ViewModel.IsInternetConnectionActive)
+            if (_activityIndicator.IsRunning)
                 return;
 
             PopPageFromNavigationStack();

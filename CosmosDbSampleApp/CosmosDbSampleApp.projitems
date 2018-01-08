@@ -15,7 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Page\PersonListPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PersonListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\DocumentDbService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\DocumentDbModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CosmosDbModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\PersonModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Page\AddPersonPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AddPersonViewModel.cs" />
