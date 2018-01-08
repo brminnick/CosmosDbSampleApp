@@ -54,7 +54,7 @@ namespace CosmosDbSampleApp
             }
             catch (Exception e)
             {
-                OnError(e.InnerException.Message);
+                OnErrorTriggered(e.InnerException.Message);
                 DebugHelpers.PrintException(e);
             }
             finally
@@ -63,7 +63,7 @@ namespace CosmosDbSampleApp
             }
         }
 
-        void OnError(string message) => ErrorTriggered?.Invoke(this, message);
+        void OnErrorTriggered(string message) => ErrorTriggered?.Invoke(this, message);
         #endregion
     }
 }

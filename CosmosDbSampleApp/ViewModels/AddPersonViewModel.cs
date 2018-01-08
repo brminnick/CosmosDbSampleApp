@@ -48,7 +48,7 @@ namespace CosmosDbSampleApp
             var ageParseSucceeded = int.TryParse(AgeEntryText, out var age);
             if (!ageParseSucceeded)
             {
-                OnSaveError("Age Must Be A Whole Number");
+                OnSaveErrorred("Age Must Be A Whole Number");
                 return;
             }
 
@@ -67,18 +67,18 @@ namespace CosmosDbSampleApp
                 if (result != null)
                     OnSaveCompleted();
                 else if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
-                    OnSaveError("Invalid DocumentDb Read/Write Key");
+                    OnSaveErrorred("Invalid DocumentDb Read/Write Key");
                 else
-                    OnSaveError("Save Failed");
+                    OnSaveErrorred("Save Failed");
             }
             catch (System.Net.WebException e)
             {
-                OnSaveError(e.Message);
+                OnSaveErrorred(e.Message);
                 DebugHelpers.PrintException(e);
             }
             catch (Exception e)
             {
-                OnSaveError(e.Message);
+                OnSaveErrorred(e.Message);
                 DebugHelpers.PrintException(e);
             }
             finally
@@ -88,7 +88,7 @@ namespace CosmosDbSampleApp
         }
 
         void OnSaveCompleted() => SaveCompleted?.Invoke(this, EventArgs.Empty);
-        void OnSaveError(string message) => SaveErrorred?.Invoke(this, message);
+        void OnSaveErrorred(string message) => SaveErrorred?.Invoke(this, message);
         #endregion
     }
 }
