@@ -62,7 +62,7 @@ namespace CosmosDbSampleApp
 
             try
             {
-                var result = await DocumentDbService.Create(person);
+                var result = await DocumentDbService.Create(person).ConfigureAwait(false);
 
                 if (result != null)
                     OnSaveCompleted();

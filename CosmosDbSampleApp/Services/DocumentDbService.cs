@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Net;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+
+using Xamarin.Forms;
 
 namespace CosmosDbSampleApp
 {
@@ -16,7 +20,7 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Fields
-        static bool _networkIndicatorCount = 0;
+        static int _networkIndicatorCount = 0;
         #endregion
 
         #region Methods
@@ -26,7 +30,7 @@ namespace CosmosDbSampleApp
 
             try
             {
-                await Task.Run(() => _readonlyClient.CreateDocumentQuery<PersonModel>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name))?.ToList());
+                return await Task.Run(() => _readonlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name))?.ToList()).ConfigureAwait(false);
             }
             finally
             {
@@ -41,7 +45,7 @@ namespace CosmosDbSampleApp
             try
             {
 
-                var result = await _readonlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id));
+                var result = await _readonlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (result.StatusCode != HttpStatusCode.Created)
                     return default(T);
@@ -60,9 +64,9 @@ namespace CosmosDbSampleApp
 
             try
             {
-                var documentClient = await GetDocumentClient().ConfigureAwait(false); ;
+                var documentClient = GetReadWriteDocumentClient();
 
-                return await documentClient?.ReplaceDocumentAsync(CreateDocumentUri(document.CosmosDbId), document);
+                return await documentClient?.ReplaceDocumentAsync(CreateDocumentUri(document.Id), document);
             }
             finally
             {
@@ -76,9 +80,9 @@ namespace CosmosDbSampleApp
 
             try
             {
-                var documentClient = await GetDocumentClient().ConfigureAwait(false);
+                var documentClient = GetReadWriteDocumentClient();
 
-                return await documentClient?.CreateDocumentAsync(DocumentCollectionUri, document);
+                return await documentClient?.CreateDocumentAsync(_documentCollectionUri, document);
             }
             finally
             {

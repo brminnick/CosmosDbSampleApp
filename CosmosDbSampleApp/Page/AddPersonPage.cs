@@ -42,20 +42,20 @@ namespace CosmosDbSampleApp
             };
             ageEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.AgeEntryText));
             ageEntry.SetBinding(CustomReturnEffect.ReturnCommandProperty, nameof(ViewModel.SaveButtonCommand));
-            ageEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsInternetConnectionActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsInternetConnectionActive));
+            ageEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsActivityIndicatorActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsActivityIndicatorActive));
             CustomReturnEffect.SetReturnType(ageEntry, ReturnType.Go);
 
             var nameLabel = new Label { Text = "Name" };
 
             _nameEntry = new AddPersonPageEntry { Placeholder = "Name" };
             _nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
-            _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsInternetConnectionActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsInternetConnectionActive));
+            _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsActivityIndicatorActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsActivityIndicatorActive));
             CustomReturnEffect.SetReturnCommand(_nameEntry, new Command(() => ageEntry.Focus()));
             CustomReturnEffect.SetReturnType(_nameEntry, ReturnType.Next);
 
             _activityIndicator = new ActivityIndicator();
-            _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsInternetConnectionActive));
-            _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsInternetConnectionActive));
+            _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsActivityIndicatorActive));
+            _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsActivityIndicatorActive));
 
             Padding = GetPageThickness();
 
@@ -66,7 +66,7 @@ namespace CosmosDbSampleApp
                     _nameEntry,
                     ageLabel,
                     ageEntry,
-                    activityIndicator
+                    _activityIndicator
                 }
             };
 
