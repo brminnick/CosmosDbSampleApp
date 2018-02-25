@@ -2,6 +2,8 @@
 
 using Xamarin.Forms;
 
+using CosmosDbSampleApp.Shared;
+
 namespace CosmosDbSampleApp
 {
     public class PersonListPage : BaseContentPage<PersonListViewModel>
@@ -14,7 +16,11 @@ namespace CosmosDbSampleApp
         #region Constructors
         public PersonListPage()
         {
-            _addButtonToolBarItem = new ToolbarItem { Icon = "Add" };
+            _addButtonToolBarItem = new ToolbarItem
+            {
+                Icon = "Add",
+                AutomationId = AutomationIdConstants.PersonListPage_AddButton
+            };
             ToolbarItems.Add(_addButtonToolBarItem);
 
             _personList = new ListView(ListViewCachingStrategy.RecycleElement)
@@ -22,13 +28,14 @@ namespace CosmosDbSampleApp
                 ItemTemplate = new DataTemplate(typeof(PersonListViewCell)),
                 IsPullToRefreshEnabled = true,
                 BackgroundColor = ColorConstants.PageBackgroundColor,
-                HasUnevenRows = true
+                HasUnevenRows = true,
+                AutomationId = AutomationIdConstants.PersonListPage_PersonList
             };
             _personList.SetBinding(ListView.IsRefreshingProperty, nameof(ViewModel.IsRefreshing));
             _personList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
             _personList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
 
-            var activityIndicator = new ActivityIndicator();
+            var activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.PersonListPage_ActivityIndicator };
             activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsDeletingPerson));
             activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsDeletingPerson));
 
@@ -56,7 +63,7 @@ namespace CosmosDbSampleApp
 
             Content = relativeLayout;
 
-            Title = "Person List";
+            Title = PageTitles.PersonListPage;
         }
         #endregion
 
@@ -75,14 +82,14 @@ namespace CosmosDbSampleApp
         protected override void SubscribeEventHandlers()
         {
             _personList.ItemTapped += HandleItemTapped;
-			ViewModel.ErrorTriggered += HandleErrorTriggered;
+            ViewModel.ErrorTriggered += HandleErrorTriggered;
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
         }
 
         protected override void UnsubscribeEventHandlers()
         {
             _personList.ItemTapped -= HandleItemTapped;
-			ViewModel.ErrorTriggered -= HandleErrorTriggered;
+            ViewModel.ErrorTriggered -= HandleErrorTriggered;
             _addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
         }
 

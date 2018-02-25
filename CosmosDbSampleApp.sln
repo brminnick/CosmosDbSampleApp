@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.Droid", "
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CosmosDbSampleApp", "CosmosDbSampleApp\CosmosDbSampleApp.shproj", "{50B95108-839D-4687-8379-46261BBDA927}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CosmosDbSampleApp.Shared", "CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.shproj", "{2E0B1C2E-14FE-42FF-9A68-1E7F9648D035}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -4,6 +4,8 @@ using Xamarin.Forms;
 
 using EntryCustomReturn.Forms.Plugin.Abstractions;
 
+using CosmosDbSampleApp.Shared;
+
 namespace CosmosDbSampleApp
 {
     public class AddPersonPage : BaseContentPage<AddPersonViewModel>
@@ -22,6 +24,7 @@ namespace CosmosDbSampleApp
             {
                 Text = _saveButtonToolBarItemText,
                 Priority = 0,
+                AutomationId = AutomationIdConstants.AddPersonPage_SaveButton
             };
             saveButtonToolBar.SetBinding(ToolbarItem.CommandProperty, nameof(ViewModel.SaveButtonCommand));
             ToolbarItems.Add(saveButtonToolBar);
@@ -29,7 +32,8 @@ namespace CosmosDbSampleApp
             _cancelButtonToolbarItem = new ToolbarItem
             {
                 Text = _cancelButtonToolBarItemText,
-                Priority = 1
+                Priority = 1,
+                AutomationId = AutomationIdConstants.AddPersonPage_CancelButton
             };
             ToolbarItems.Add(_cancelButtonToolbarItem);
 
@@ -38,7 +42,8 @@ namespace CosmosDbSampleApp
             var ageEntry = new AddPersonPageEntry
             {
                 Placeholder = "Age",
-                Keyboard = Keyboard.Numeric
+                Keyboard = Keyboard.Numeric,
+                AutomationId = AutomationIdConstants.AddPersonPage_AgeEntry
             };
             ageEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.AgeEntryText));
             ageEntry.SetBinding(CustomReturnEffect.ReturnCommandProperty, nameof(ViewModel.SaveButtonCommand));
@@ -47,13 +52,17 @@ namespace CosmosDbSampleApp
 
             var nameLabel = new Label { Text = "Name" };
 
-            _nameEntry = new AddPersonPageEntry { Placeholder = "Name" };
+            _nameEntry = new AddPersonPageEntry
+            {
+                Placeholder = "Name",
+                AutomationId = AutomationIdConstants.AddPersonPage_NameEntry
+            };
             _nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
             _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsActivityIndicatorActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsActivityIndicatorActive));
             CustomReturnEffect.SetReturnCommand(_nameEntry, new Command(() => ageEntry.Focus()));
             CustomReturnEffect.SetReturnType(_nameEntry, ReturnType.Next);
 
-            _activityIndicator = new ActivityIndicator();
+            _activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.AddPersonPage_ActivityIndicator };
             _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsActivityIndicatorActive));
             _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsActivityIndicatorActive));
 
@@ -70,7 +79,7 @@ namespace CosmosDbSampleApp
                 }
             };
 
-            Title = "Add Person";
+            Title = PageTitles.AddPersonPage;
 
             Content = new ScrollView { Content = stackLayout };
         }
@@ -84,15 +93,15 @@ namespace CosmosDbSampleApp
 
         protected override void SubscribeEventHandlers()
         {
-			ViewModel.SaveErrorred += HandleError;
+            ViewModel.SaveErrorred += HandleError;
             ViewModel.SaveCompleted += HandleSaveCompleted;
-			_cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
+            _cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
         }
 
         protected override void UnsubscribeEventHandlers()
         {
             ViewModel.SaveErrorred -= HandleError;
-			ViewModel.SaveCompleted += HandleSaveCompleted;
+            ViewModel.SaveCompleted += HandleSaveCompleted;
             _cancelButtonToolbarItem.Clicked -= HandleCancelButtonToolbarItemClicked;
         }
 
