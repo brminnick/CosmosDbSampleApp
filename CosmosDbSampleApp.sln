@@ -1,9 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.iOS", "iOS\CosmosDbSampleApp.iOS.csproj", "{0D33938C-EB02-437F-A395-6BA569C7F6A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.iOS", "CosmosDbSampleApp.iOS\CosmosDbSampleApp.iOS.csproj", "{0D33938C-EB02-437F-A395-6BA569C7F6A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.Droid", "Droid\CosmosDbSampleApp.Droid.csproj", "{97D57FF9-B8E6-4C33-A10B-8A87063605F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.Droid", "CosmosDbSampleApp.Droid\CosmosDbSampleApp.Droid.csproj", "{97D57FF9-B8E6-4C33-A10B-8A87063605F4}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CosmosDbSampleApp", "CosmosDbSampleApp\CosmosDbSampleApp.shproj", "{50B95108-839D-4687-8379-46261BBDA927}"
 EndProject
