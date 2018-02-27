@@ -29,6 +29,9 @@ namespace CosmosDbSampleApp.UITests
 
             PersonListPage = new PersonListPage(App, PageTitles.PersonListPage);
             AddPersonPage = new AddPersonPage(App, PageTitles.AddPersonPage);
+
+            PersonListPage.WaitForPageToLoad();
+            App.Screenshot("App Launched");
         }
         #endregion
     }

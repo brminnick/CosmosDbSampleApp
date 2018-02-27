@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+
+using NUnit.Framework;
 
 using Xamarin.UITest;
 
@@ -6,26 +8,31 @@ namespace CosmosDbSampleApp.UITests
 {
     [TestFixture(Platform.Android)]
     [TestFixture(Platform.iOS)]
-    public class Tests
+    public class Tests : BaseTest
     {
-        IApp app;
-        Platform platform;
-
-        public Tests(Platform platform)
+        public Tests(Platform platform) : base(platform)
         {
-            this.platform = platform;
-        }
-
-        [SetUp]
-        public void BeforeEachTest()
-        {
-            app = AppInitializer.StartApp(platform);
         }
 
         [Test]
-        public void AppLaunches()
+        public void AddNewContact()
         {
-            app.Screenshot("First screen.");
+            //Arrange
+            const string name = "Test Contact";
+            const int age = 37;
+
+            //Act
+            PersonListPage.TapAddButton();
+
+            AddPersonPage.EnterName(name);
+            AddPersonPage.EnterAge(age);
+            AddPersonPage.TapSaveButton();
+
+            PersonListPage.WaitForPageToLoad();
+
+            //Assert
+            Assert.IsTrue(App.Query(name).Any());
+            Assert.IsTrue(App.Query(age.ToString()).Any());
         }
     }
 }
