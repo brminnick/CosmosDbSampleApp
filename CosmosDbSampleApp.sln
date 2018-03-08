@@ -9,6 +9,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CosmosDbSampleApp", "Cosmos
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CosmosDbSampleApp.Shared", "CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.shproj", "{2E0B1C2E-14FE-42FF-9A68-1E7F9648D035}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbSampleApp.UITests", "CosmosDbSampleApp.UITests\CosmosDbSampleApp.UITests.csproj", "{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,5 +45,17 @@ Global
 		{97D57FF9-B8E6-4C33-A10B-8A87063605F4}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{97D57FF9-B8E6-4C33-A10B-8A87063605F4}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{97D57FF9-B8E6-4C33-A10B-8A87063605F4}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Release|iPhone.Build.0 = Release|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{DC1A1AC9-DD38-48F0-9EFD-E13A1B7901A6}.Debug|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
