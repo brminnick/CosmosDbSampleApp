@@ -6,8 +6,6 @@ using Xamarin.UITest;
 
 namespace CosmosDbSampleApp.UITests
 {
-    [TestFixture(Platform.Android)]
-    [TestFixture(Platform.iOS)]
     public class Tests : BaseTest
     {
         public Tests(Platform platform) : base(platform)
@@ -18,21 +16,36 @@ namespace CosmosDbSampleApp.UITests
         public void AddNewContact()
         {
             //Arrange
-            const string name = "Test Contact";
-            const int age = 37;
 
             //Act
             PersonListPage.TapAddButton();
 
-            AddPersonPage.EnterName(name);
-            AddPersonPage.EnterAge(age);
+            AddPersonPage.EnterName(TestConstants.TestContactName);
+            AddPersonPage.EnterAge(TestConstants.TestContactAge);
             AddPersonPage.TapSaveButton();
 
             PersonListPage.WaitForPageToLoad();
 
             //Assert
-            Assert.IsTrue(App.Query(name).Any());
-            Assert.IsTrue(App.Query(age.ToString()).Any());
+            Assert.IsTrue(PersonListPage.DoesContactExist(TestConstants.TestContactName));
+        }
+
+        [Test]
+        public void CancelAddNewContact()
+        {
+            //Arrange
+
+            //Act
+            PersonListPage.TapAddButton();
+
+            AddPersonPage.EnterName(TestConstants.TestContactName);
+            AddPersonPage.EnterAge(TestConstants.TestContactAge);
+            AddPersonPage.TapCancelButton();
+
+            PersonListPage.WaitForPageToLoad();
+
+            //Assert
+            Assert.IsFalse(PersonListPage.DoesContactExist(TestConstants.TestContactName));
         }
     }
 }

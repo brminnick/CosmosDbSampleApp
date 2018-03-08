@@ -1,5 +1,8 @@
 ﻿using Xamarin.UITest;
 
+using Xamarin.UITest.iOS;
+using Xamarin.UITest.Android;
+
 using CosmosDbSampleApp.Shared;
 
 using Query = System.Func<Xamarin.UITest.Queries.AppQuery, Xamarin.UITest.Queries.AppQuery>;
@@ -24,7 +27,16 @@ namespace CosmosDbSampleApp.UITests
         #region Methods
         public void TapAddButton()
         {
-            App.Tap(_addButton);
+            switch (App)
+            {
+                case iOSApp iosApp:
+                    iosApp.Tap(_addButton);
+                    break;
+                case AndroidApp androidApp:
+                    androidApp.Tap(x => x.Class("ActionMenuItemView"));
+                    break;
+            }
+
             App.Screenshot("Add Button Tapped");
         }
 
@@ -38,6 +50,36 @@ namespace CosmosDbSampleApp.UITests
         {
             App.WaitForNoElement(_activityIndicator);
             App.Screenshot("Activity Indicator Disappeared");
+        }
+
+        public void DeletePerson(string name)
+        {
+            switch(App)
+            {
+                case AndroidApp androidApp:
+                    androidApp.TouchAndHold(name);
+                    break;
+                case iOSApp iosApp:
+                    iosApp.SwipeRightToLeft(name);
+                    break;
+            }
+            App.Screenshot("Exposed Delete Menu");
+
+            App.Tap("Delete");
+            App.Screenshot($"{name} Deleted");
+        }
+
+        public bool DoesContactExist(string name)
+        {
+            try
+            {
+                App.ScrollDownTo(name);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         #endregion
     }

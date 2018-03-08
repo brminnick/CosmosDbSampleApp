@@ -1,4 +1,6 @@
 ﻿using Xamarin.UITest;
+using Xamarin.UITest.iOS;
+using Xamarin.UITest.Android;
 
 using Query = System.Func<Xamarin.UITest.Queries.AppQuery, Xamarin.UITest.Queries.AppQuery>;
 using CosmosDbSampleApp.Shared;
@@ -24,13 +26,31 @@ namespace CosmosDbSampleApp.UITests
 
         public void TapSaveButton()
         {
-            App.Tap(_saveButton);
+            switch (App)
+            {
+                case iOSApp iosApp:
+                    iosApp.Tap(_saveButton);
+                    break;
+                case AndroidApp androidApp:
+                    androidApp.Tap(x => x.Marked("Save"));
+                    break;
+            }
+
             App.Screenshot("Save Button Tapped");
         }
 
         public void TapCancelButton()
         {
-            App.Tap(_cancelButton);
+            switch (App)
+            {
+                case iOSApp iosApp:
+                    iosApp.Tap(_cancelButton);
+                    break;
+                case AndroidApp androidApp:
+                    androidApp.Tap(x => x.Marked("Cancel"));
+                    break;
+            }
+
             App.Screenshot("Cancel Button Tapped");
         }
 

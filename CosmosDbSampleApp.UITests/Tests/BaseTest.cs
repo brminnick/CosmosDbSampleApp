@@ -5,6 +5,8 @@ using CosmosDbSampleApp.Shared;
 
 namespace CosmosDbSampleApp.UITests
 {
+    [TestFixture(Platform.Android)]
+    [TestFixture(Platform.iOS)]
     public abstract class BaseTest
     {
         #region Constant Fields
@@ -32,6 +34,25 @@ namespace CosmosDbSampleApp.UITests
 
             PersonListPage.WaitForPageToLoad();
             App.Screenshot("App Launched");
+        }
+
+        [TearDown]
+        public virtual void TestTearDown()
+        {
+            try
+            {
+                PersonListPage.WaitForPageToLoad();
+            }
+            catch
+            {
+                AddPersonPage.TapCancelButton();
+            }
+
+            if (PersonListPage.DoesContactExist(TestConstants.TestContactName))
+            {
+                PersonListPage.DeletePerson(TestConstants.TestContactName);
+                PersonListPage.WaitForNoActivityIndicator();
+            }
         }
         #endregion
     }
