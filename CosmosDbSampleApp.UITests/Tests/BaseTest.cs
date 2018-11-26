@@ -52,8 +52,8 @@ namespace CosmosDbSampleApp.UITests
             {
                 await PersonListPage.DeletePerson(TestConstants.TestContactName).ConfigureAwait(false);
 
-                PersonListPage.WaitForActivityIndicator();
                 PersonListPage.WaitForNoActivityIndicator();
+                await PersonListPage.WaitForPullToRefreshIndicatorToDisappear().ConfigureAwait(false);
             }
         }
         #endregion
