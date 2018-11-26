@@ -3,6 +3,7 @@
 using NUnit.Framework;
 
 using Xamarin.UITest;
+using System.Threading.Tasks;
 
 namespace CosmosDbSampleApp.UITests
 {
@@ -13,7 +14,7 @@ namespace CosmosDbSampleApp.UITests
         }
 
         [Test]
-        public void AddNewContact()
+        public async Task AddNewContact()
         {
             //Arrange
 
@@ -24,14 +25,16 @@ namespace CosmosDbSampleApp.UITests
             AddPersonPage.EnterAge(TestConstants.TestContactAge);
             AddPersonPage.TapSaveButton();
 
-            PersonListPage.WaitForPageToLoad();
+            await PersonListPage.WaitForPageToLoad().ConfigureAwait(false);
 
             //Assert
             Assert.IsTrue(PersonListPage.DoesContactExist(TestConstants.TestContactName));
+
+            await TestTearDown().ConfigureAwait(false);
         }
 
         [Test]
-        public void CancelAddNewContact()
+        public async Task CancelAddNewContact()
         {
             //Arrange
 
@@ -42,10 +45,12 @@ namespace CosmosDbSampleApp.UITests
             AddPersonPage.EnterAge(TestConstants.TestContactAge);
             AddPersonPage.TapCancelButton();
 
-            PersonListPage.WaitForPageToLoad();
+            await PersonListPage.WaitForPageToLoad().ConfigureAwait(false);
 
             //Assert
             Assert.IsFalse(PersonListPage.DoesContactExist(TestConstants.TestContactName));
+
+            await TestTearDown().ConfigureAwait(false);
         }
     }
 }

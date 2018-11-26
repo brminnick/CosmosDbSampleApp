@@ -1,4 +1,5 @@
 ﻿using Xamarin.UITest;
+using System.Threading.Tasks;
 
 namespace CosmosDbSampleApp.UITests
 {
@@ -18,7 +19,7 @@ namespace CosmosDbSampleApp.UITests
         #endregion
 
         #region Methods
-        public virtual void WaitForPageToLoad() => App.WaitForElement(Title);
+        public virtual Task WaitForPageToLoad() => Task.FromResult(App.WaitForElement(Title));
         #endregion
     }
 }

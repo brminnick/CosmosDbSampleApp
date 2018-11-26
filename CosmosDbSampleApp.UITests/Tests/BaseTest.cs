@@ -2,6 +2,7 @@
 
 using Xamarin.UITest;
 using CosmosDbSampleApp.Shared;
+using System.Threading.Tasks;
 
 namespace CosmosDbSampleApp.UITests
 {
@@ -32,16 +33,15 @@ namespace CosmosDbSampleApp.UITests
             PersonListPage = new PersonListPage(App, PageTitles.PersonListPage);
             AddPersonPage = new AddPersonPage(App, PageTitles.AddPersonPage);
 
-            PersonListPage.WaitForPageToLoad();
+            PersonListPage.WaitForPageToLoad().GetAwaiter().GetResult();
             App.Screenshot("App Launched");
         }
 
-        [TearDown]
-        public virtual void TestTearDown()
+        protected async Task TestTearDown()
         {
             try
             {
-                PersonListPage.WaitForPageToLoad();
+                await PersonListPage.WaitForPageToLoad();
             }
             catch
             {
@@ -50,7 +50,9 @@ namespace CosmosDbSampleApp.UITests
 
             if (PersonListPage.DoesContactExist(TestConstants.TestContactName))
             {
-                PersonListPage.DeletePerson(TestConstants.TestContactName);
+                await PersonListPage.DeletePerson(TestConstants.TestContactName).ConfigureAwait(false);
+
+                PersonListPage.WaitForActivityIndicator();
                 PersonListPage.WaitForNoActivityIndicator();
             }
         }
