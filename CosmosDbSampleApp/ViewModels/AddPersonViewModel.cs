@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Threading.Tasks;
 
-using Xamarin.Forms;
+using AsyncAwaitBestPractices.MVVM;
 
 namespace CosmosDbSampleApp
 {
@@ -11,17 +11,17 @@ namespace CosmosDbSampleApp
         #region Fields
         ICommand _saveButtonCommand;
         string _ageEntryText, _nameEntryText;
-        bool _isActivityIndicatorActive;
+        bool _isBusy;
         #endregion
 
         #region Events
-        public event EventHandler<string> SaveErrorred;
+        public event EventHandler<string> SaveErrored;
         public event EventHandler SaveCompleted;
         #endregion
 
         #region Properties
         public ICommand SaveButtonCommand => _saveButtonCommand ??
-            (_saveButtonCommand = new Command(async () => await ExecuteSaveButtonCommand()));
+            (_saveButtonCommand = new AsyncCommand(ExecuteSaveButtonCommand, false));
 
         public string AgeEntryText
         {
@@ -35,10 +35,10 @@ namespace CosmosDbSampleApp
             set => SetProperty(ref _nameEntryText, value);
         }
 
-        public bool IsActivityIndicatorActive
+        public bool IsBusy
         {
-            get => _isActivityIndicatorActive;
-            set => SetProperty(ref _isActivityIndicatorActive, value);
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
         }
         #endregion
 
@@ -58,37 +58,30 @@ namespace CosmosDbSampleApp
                 Age = age
             };
 
-            IsActivityIndicatorActive = true;
+            IsBusy = true;
 
             try
             {
                 var result = await DocumentDbService.Create(person).ConfigureAwait(false);
 
-                if (result != null)
-                    OnSaveCompleted();
-                else if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
-                    OnSaveErrorred("Invalid DocumentDb Read/Write Key");
-                else
+                if (result is null)
                     OnSaveErrorred("Save Failed");
-            }
-            catch (System.Net.WebException e)
-            {
-                OnSaveErrorred(e.Message);
-                DebugHelpers.PrintException(e);
+                else
+                    OnSaveCompleted();
             }
             catch (Exception e)
             {
                 OnSaveErrorred(e.Message);
-                DebugHelpers.PrintException(e);
+                DebugService.PrintException(e);
             }
             finally
             {
-                IsActivityIndicatorActive = false;
+                IsBusy = false;
             }
         }
 
         void OnSaveCompleted() => SaveCompleted?.Invoke(this, EventArgs.Empty);
-        void OnSaveErrorred(string message) => SaveErrorred?.Invoke(this, message);
+        void OnSaveErrorred(string message) => SaveErrored?.Invoke(this, message);
         #endregion
     }
 }

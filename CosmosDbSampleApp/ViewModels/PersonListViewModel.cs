@@ -3,7 +3,7 @@ using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using Xamarin.Forms;
+using AsyncAwaitBestPractices.MVVM;
 
 namespace CosmosDbSampleApp
 {
@@ -21,7 +21,7 @@ namespace CosmosDbSampleApp
 
         #region Properties
         public ICommand PullToRefreshCommand => _pullToRefreshCommand ??
-            (_pullToRefreshCommand = new Command(async () => await ExecutePullToRefreshCommand()));
+            (_pullToRefreshCommand = new AsyncCommand(UpdatePersonList, false));
 
         public IList<PersonModel> PersonList
         {
@@ -43,8 +43,6 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Methods
-        Task ExecutePullToRefreshCommand() => UpdatePersonList();
-
         async Task UpdatePersonList()
         {
             try
@@ -55,7 +53,7 @@ namespace CosmosDbSampleApp
             catch (Exception e)
             {
                 OnErrorTriggered(e.InnerException.Message);
-                DebugHelpers.PrintException(e);
+                DebugService.PrintException(e);
             }
             finally
             {

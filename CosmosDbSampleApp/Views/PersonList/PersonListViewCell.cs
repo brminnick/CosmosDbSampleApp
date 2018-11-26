@@ -99,23 +99,16 @@ namespace CosmosDbSampleApp
 
             PersonListViewModel.IsDeletingPerson = true;
 
-            HttpStatusCode result;
             try
             {
-                result = await DocumentDbService.Delete(personSelected.Id);
+                await DocumentDbService.Delete(personSelected.Id);
 
-                if (result == default(HttpStatusCode))
-                    await Application.Current.MainPage.DisplayAlert("Error", "Invalid DocumentDb Read/Write Key", "Ok");
-                else if (result == HttpStatusCode.NoContent)
-                    Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList?.BeginRefresh());
-            }
-            catch (WebException ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
+                Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList?.BeginRefresh());
             }
             catch (Exception ex)
             {
-                DebugHelpers.PrintException(ex);
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
+                DebugService.PrintException(ex);
             }
             finally
             {
@@ -123,13 +116,7 @@ namespace CosmosDbSampleApp
             }
         }
 
-        PersonListViewModel GetPersonListViewModel()
-        {
-            var navigationPage = Application.Current.MainPage as NavigationPage;
-            var personListPage = navigationPage.Navigation.NavigationStack.FirstOrDefault() as PersonListPage;
-
-            return personListPage.BindingContext as PersonListViewModel;
-        }
+        PersonListViewModel GetPersonListViewModel() => GetPersonListPage().BindingContext as PersonListViewModel;
 
         PersonListPage GetPersonListPage()
         {

@@ -2,8 +2,6 @@
 
 using Xamarin.Forms;
 
-using EntryCustomReturn.Forms.Plugin.Abstractions;
-
 using CosmosDbSampleApp.Shared;
 
 namespace CosmosDbSampleApp
@@ -43,28 +41,28 @@ namespace CosmosDbSampleApp
             {
                 Placeholder = "Age",
                 Keyboard = Keyboard.Numeric,
-                AutomationId = AutomationIdConstants.AddPersonPage_AgeEntry
+                AutomationId = AutomationIdConstants.AddPersonPage_AgeEntry,
+                ReturnType = ReturnType.Go,
             };
             ageEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.AgeEntryText));
-            ageEntry.SetBinding(CustomReturnEffect.ReturnCommandProperty, nameof(ViewModel.SaveButtonCommand));
-            ageEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsActivityIndicatorActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsActivityIndicatorActive));
-            CustomReturnEffect.SetReturnType(ageEntry, ReturnType.Go);
+            ageEntry.SetBinding(Entry.ReturnCommandProperty, nameof(ViewModel.SaveButtonCommand));
+            ageEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsBusy), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsBusy));
 
             var nameLabel = new Label { Text = "Name" };
 
             _nameEntry = new AddPersonPageEntry
             {
                 Placeholder = "Name",
-                AutomationId = AutomationIdConstants.AddPersonPage_NameEntry
+                AutomationId = AutomationIdConstants.AddPersonPage_NameEntry,
+                ReturnCommand = new Command(() => ageEntry.Focus()),
+                ReturnType = ReturnType.Next
             };
             _nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
-            _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsActivityIndicatorActive), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsActivityIndicatorActive));
-            CustomReturnEffect.SetReturnCommand(_nameEntry, new Command(() => ageEntry.Focus()));
-            CustomReturnEffect.SetReturnType(_nameEntry, ReturnType.Next);
+            _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsBusy), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsBusy));
 
             _activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.AddPersonPage_ActivityIndicator };
-            _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsActivityIndicatorActive));
-            _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsActivityIndicatorActive));
+            _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsBusy));
+            _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsBusy));
 
             Padding = GetPageThickness();
 
@@ -93,14 +91,14 @@ namespace CosmosDbSampleApp
 
         protected override void SubscribeEventHandlers()
         {
-            ViewModel.SaveErrorred += HandleError;
+            ViewModel.SaveErrored += HandleError;
             ViewModel.SaveCompleted += HandleSaveCompleted;
             _cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
         }
 
         protected override void UnsubscribeEventHandlers()
         {
-            ViewModel.SaveErrorred -= HandleError;
+            ViewModel.SaveErrored -= HandleError;
             ViewModel.SaveCompleted += HandleSaveCompleted;
             _cancelButtonToolbarItem.Clicked -= HandleCancelButtonToolbarItemClicked;
         }

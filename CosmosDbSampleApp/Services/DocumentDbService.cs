@@ -90,19 +90,18 @@ namespace CosmosDbSampleApp
             }
         }
 
-        public static async Task<HttpStatusCode> Delete(string id)
+        public static async Task Delete(string id)
         {
             SetActivityIndicatorStatus(true);
 
             try
             {
-                var readWriteClient = GetReadWriteDocumentClient();
-                if (readWriteClient == null)
-                    return default(HttpStatusCode);
+                var documentClient = GetReadWriteDocumentClient();
 
-                var result = await readWriteClient?.DeleteDocumentAsync(CreateDocumentUri(id));
+                var result = await documentClient.DeleteDocumentAsync(CreateDocumentUri(id));
 
-                return result?.StatusCode ?? throw new HttpRequestException("Delete Failed");
+                if (!IsSuccessStatusCode(result.StatusCode))
+                    throw new Exception($"Delete Failed: {result?.StatusCode}");
             }
             finally
             {
@@ -117,7 +116,7 @@ namespace CosmosDbSampleApp
         static DocumentClient GetReadWriteDocumentClient()
         {
             if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
-                return default(DocumentClient);
+                throw new DocumentDbException("Invalid ReadWrite Primary Key");
 
             return new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
         }
@@ -136,6 +135,21 @@ namespace CosmosDbSampleApp
             }
         }
 
+        static bool IsSuccessStatusCode(HttpStatusCode statusCode) => (int)statusCode >= 200 && (int)statusCode <= 299;
+
         #endregion
+    }
+
+    public class DocumentDbException : Exception
+    {
+        public DocumentDbException(string message) : base(message)
+        {
+
+        }
+
+        public DocumentDbException()
+        {
+
+        }
     }
 }
