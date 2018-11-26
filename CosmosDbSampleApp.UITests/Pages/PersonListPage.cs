@@ -36,6 +36,7 @@ namespace CosmosDbSampleApp.UITests
         public override async Task WaitForPageToLoad()
         {
             await base.WaitForPageToLoad().ConfigureAwait(false);
+
             WaitForNoActivityIndicator();
             await WaitForPullToRefreshIndicatorToDisappear().ConfigureAwait(false);
         }
