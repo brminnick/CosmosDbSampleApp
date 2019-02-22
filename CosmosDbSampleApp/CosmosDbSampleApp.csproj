@@ -1,23 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <Folder Include="Constants\" />
-    <Folder Include="Converters\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Models\" />
-    <Folder Include="Page\" />
-    <Folder Include="Services\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="2.1.0" />
-    <PackageReference Include="Xamarin.Forms" Version="3.5.0.169047" />
-    <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.2.2" />
-  </ItemGroup>
-  <Import Project="..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems" Label="Shared" Condition="Exists('..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems')" />
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <Folder Include="Constants\" />
+        <Folder Include="Converters\" />
+        <Folder Include="Helpers\" />
+        <Folder Include="Models\" />
+        <Folder Include="Page\" />
+        <Folder Include="Services\" />
+        <Folder Include="ViewModels\" />
+        <Folder Include="Views\" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="2.1.0" />
+        <PackageReference Include="Xamarin.Forms" Version="3.5.0.169047" />
+        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.2.2" />
+    </ItemGroup>
+    <Import Project="..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems" Label="Shared" Condition="Exists('..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems')" />
 </Project>

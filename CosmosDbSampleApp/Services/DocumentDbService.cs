@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Linq;
 
 using Xamarin.Forms;
 
@@ -30,7 +30,17 @@ namespace CosmosDbSampleApp
 
             try
             {
-                return await Task.Run(() => _readonlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name))?.ToList()).ConfigureAwait(false);
+                var resultList = new List<T>();
+
+                var queryable = _readonlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name)).AsDocumentQuery();
+
+                while (queryable.HasMoreResults)
+                {
+                    var response = await queryable.ExecuteNextAsync<T>().ConfigureAwait(false);
+                    resultList.AddRange(response);
+                }
+
+                return resultList;
             }
             finally
             {
@@ -48,7 +58,7 @@ namespace CosmosDbSampleApp
                 var result = await _readonlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (result.StatusCode != HttpStatusCode.Created)
-                    return default(T);
+                    return default;
 
                 return result;
             }
@@ -136,7 +146,6 @@ namespace CosmosDbSampleApp
         }
 
         static bool IsSuccessStatusCode(HttpStatusCode statusCode) => (int)statusCode >= 200 && (int)statusCode <= 299;
-
         #endregion
     }
 
