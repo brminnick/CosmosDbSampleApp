@@ -1,14 +1,23 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AsyncAwaitBestPractices;
 
 namespace CosmosDbSampleApp
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        #region Constant Fields
+        readonly WeakEventManager _notifyPropertyChangedEventManager = new WeakEventManager();
+        #endregion
+
         #region Events
-        public event PropertyChangedEventHandler PropertyChanged;
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        {
+            add => _notifyPropertyChangedEventManager.AddEventHandler(value);
+            remove => _notifyPropertyChangedEventManager.RemoveEventHandler(value);
+        }
         #endregion
 
         #region Methods
@@ -24,7 +33,8 @@ namespace CosmosDbSampleApp
             OnPropertyChanged(propertyname);
         }
 
-        void OnPropertyChanged([CallerMemberName]string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        void OnPropertyChanged([CallerMemberName]string name = "") =>
+            _notifyPropertyChangedEventManager.HandleEvent(this, new PropertyChangedEventArgs(name), nameof(INotifyPropertyChanged.PropertyChanged));
         #endregion
     }
 }

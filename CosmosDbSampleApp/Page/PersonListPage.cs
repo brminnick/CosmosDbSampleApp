@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Xamarin.Forms;
 
@@ -9,21 +9,23 @@ namespace CosmosDbSampleApp
     public class PersonListPage : BaseContentPage<PersonListViewModel>
     {
         #region Constant Fields
-        readonly ListView _personList;
         readonly ToolbarItem _addButtonToolBarItem;
         #endregion
 
         #region Constructors
         public PersonListPage()
         {
+            ViewModel.ErrorTriggered += HandleErrorTriggered;
+
             _addButtonToolBarItem = new ToolbarItem
             {
                 Icon = "Add",
                 AutomationId = AutomationIdConstants.PersonListPage_AddButton
             };
+            _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
             ToolbarItems.Add(_addButtonToolBarItem);
 
-            _personList = new ListView(ListViewCachingStrategy.RecycleElement)
+            PersonList = new ListView(ListViewCachingStrategy.RecycleElement)
             {
                 ItemTemplate = new DataTemplate(typeof(PersonListViewCell)),
                 IsPullToRefreshEnabled = true,
@@ -31,9 +33,10 @@ namespace CosmosDbSampleApp
                 HasUnevenRows = true,
                 AutomationId = AutomationIdConstants.PersonListPage_PersonList
             };
-            _personList.SetBinding(ListView.IsRefreshingProperty, nameof(ViewModel.IsRefreshing));
-            _personList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
-            _personList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
+            PersonList.ItemTapped += HandleItemTapped;
+            PersonList.SetBinding(ListView.IsRefreshingProperty, nameof(ViewModel.IsRefreshing));
+            PersonList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
+            PersonList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
 
             var activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.PersonListPage_ActivityIndicator };
             activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsDeletingPerson));
@@ -47,7 +50,7 @@ namespace CosmosDbSampleApp
             Func<RelativeLayout, double> getActivityIndicatorWidth = (p) => activityIndicator.Measure(p.Width, p.Height).Request.Width;
             Func<RelativeLayout, double> getActivityIndicatorHeight = (p) => activityIndicator.Measure(p.Width, p.Height).Request.Height;
 
-            relativeLayout.Children.Add(_personList,
+            relativeLayout.Children.Add(PersonList,
                                        Constraint.Constant(0),
                                        Constraint.Constant(0));
 
@@ -68,7 +71,7 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Properties
-        public ListView PersonList => _personList;
+        public ListView PersonList { get; }
         #endregion
 
         #region Methods
@@ -76,21 +79,7 @@ namespace CosmosDbSampleApp
         {
             base.OnAppearing();
 
-            Device.BeginInvokeOnMainThread(_personList.BeginRefresh);
-        }
-
-        protected override void SubscribeEventHandlers()
-        {
-            _personList.ItemTapped += HandleItemTapped;
-            ViewModel.ErrorTriggered += HandleErrorTriggered;
-            _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
-        }
-
-        protected override void UnsubscribeEventHandlers()
-        {
-            _personList.ItemTapped -= HandleItemTapped;
-            ViewModel.ErrorTriggered -= HandleErrorTriggered;
-            _addButtonToolBarItem.Clicked -= HandleAddButtonClicked;
+            Device.BeginInvokeOnMainThread(PersonList.BeginRefresh);
         }
 
         void HandleErrorTriggered(object sender, string e) =>
@@ -105,11 +94,13 @@ namespace CosmosDbSampleApp
         void HandleAddButtonClicked(object sender, EventArgs e)
         {
             Device.BeginInvokeOnMainThread(async () =>
+            {
                 await Navigation.PushModalAsync(new NavigationPage(new AddPersonPage())
                 {
                     BarTextColor = ColorConstants.BarTextColor,
                     BarBackgroundColor = ColorConstants.BarBackgroundColor
-                }));
+                });
+            });
         }
         #endregion
     }

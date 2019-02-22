@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Xamarin.Forms;
 
@@ -12,12 +12,14 @@ namespace CosmosDbSampleApp
         const string _saveButtonToolBarItemText = "Save";
         const string _cancelButtonToolBarItemText = "Cancel";
         readonly AddPersonPageEntry _nameEntry;
-        readonly ToolbarItem _cancelButtonToolbarItem;
         readonly ActivityIndicator _activityIndicator;
         #endregion  
 
         public AddPersonPage()
         {
+            ViewModel.SaveErrored += HandleError;
+            ViewModel.SaveCompleted += HandleSaveCompleted;
+
             var saveButtonToolBar = new ToolbarItem
             {
                 Text = _saveButtonToolBarItemText,
@@ -27,13 +29,14 @@ namespace CosmosDbSampleApp
             saveButtonToolBar.SetBinding(ToolbarItem.CommandProperty, nameof(ViewModel.SaveButtonCommand));
             ToolbarItems.Add(saveButtonToolBar);
 
-            _cancelButtonToolbarItem = new ToolbarItem
+            var cancelButtonToolbarItem = new ToolbarItem
             {
                 Text = _cancelButtonToolBarItemText,
                 Priority = 1,
                 AutomationId = AutomationIdConstants.AddPersonPage_CancelButton
             };
-            ToolbarItems.Add(_cancelButtonToolbarItem);
+            cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
+            ToolbarItems.Add(cancelButtonToolbarItem);
 
             var ageLabel = new Label { Text = "Age" };
 
@@ -64,7 +67,7 @@ namespace CosmosDbSampleApp
             _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsBusy));
             _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsBusy));
 
-            Padding = GetPageThickness();
+            Padding = new Thickness(20, 20, 20, 0);
 
             var stackLayout = new StackLayout
             {
@@ -86,21 +89,7 @@ namespace CosmosDbSampleApp
         {
             base.OnAppearing();
 
-            _nameEntry?.Focus();
-        }
-
-        protected override void SubscribeEventHandlers()
-        {
-            ViewModel.SaveErrored += HandleError;
-            ViewModel.SaveCompleted += HandleSaveCompleted;
-            _cancelButtonToolbarItem.Clicked += HandleCancelButtonToolbarItemClicked;
-        }
-
-        protected override void UnsubscribeEventHandlers()
-        {
-            ViewModel.SaveErrored -= HandleError;
-            ViewModel.SaveCompleted += HandleSaveCompleted;
-            _cancelButtonToolbarItem.Clicked -= HandleCancelButtonToolbarItemClicked;
+            _nameEntry.Focus();
         }
 
         void HandleCancelButtonToolbarItemClicked(object sender, EventArgs e)
@@ -113,16 +102,14 @@ namespace CosmosDbSampleApp
 
         void HandleError(object sender, string message)
         {
-            Device.BeginInvokeOnMainThread(async () =>
-                                           await DisplayAlert("Error", message, "ok"));
+            Device.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", message, "ok"));
         }
 
         void HandleSaveCompleted(object sender, EventArgs e) => PopPageFromNavigationStack();
 
-        void PopPageFromNavigationStack() =>
-            Device.BeginInvokeOnMainThread(async () =>
-                                           await Navigation.PopModalAsync());
-
-        Thickness GetPageThickness() => new Thickness(20, 20, 20, 0);
+        void PopPageFromNavigationStack()
+        {
+            Device.BeginInvokeOnMainThread(async () => await Navigation.PopModalAsync());
+        }
     }
 }

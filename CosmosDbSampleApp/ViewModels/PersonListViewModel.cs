@@ -1,14 +1,19 @@
-﻿using System;
+using System;
 using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using AsyncAwaitBestPractices.MVVM;
+using AsyncAwaitBestPractices;
 
 namespace CosmosDbSampleApp
 {
     public class PersonListViewModel : BaseViewModel
     {
+        #region Constant Fields
+        readonly WeakEventManager<string> _errorTriggeredEventManager = new WeakEventManager<string>();
+        #endregion
+
         #region Fields
         bool _isDeletingPerson, _isRefreshing;
         IList<PersonModel> _personList;
@@ -16,12 +21,16 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Events
-        public event EventHandler<string> ErrorTriggered;
+        public event EventHandler<string> ErrorTriggered
+        {
+            add => _errorTriggeredEventManager.AddEventHandler(value);
+            remove => _errorTriggeredEventManager.RemoveEventHandler(value);
+        }
         #endregion
 
         #region Properties
         public ICommand PullToRefreshCommand => _pullToRefreshCommand ??
-            (_pullToRefreshCommand = new AsyncCommand(UpdatePersonList, false));
+            (_pullToRefreshCommand = new AsyncCommand(UpdatePersonList, continueOnCapturedContext: false));
 
         public IList<PersonModel> PersonList
         {
@@ -48,7 +57,7 @@ namespace CosmosDbSampleApp
             try
             {
                 IsRefreshing = true;
-                PersonList = await DocumentDbService.GetAll<PersonModel>();
+                PersonList = await DocumentDbService.GetAll<PersonModel>().ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -61,7 +70,7 @@ namespace CosmosDbSampleApp
             }
         }
 
-        void OnErrorTriggered(string message) => ErrorTriggered?.Invoke(this, message);
+        void OnErrorTriggered(string message) => _errorTriggeredEventManager.HandleEvent(this, message, nameof(ErrorTriggered));
         #endregion
     }
 }

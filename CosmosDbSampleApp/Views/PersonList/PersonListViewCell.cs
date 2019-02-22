@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Linq;
 
@@ -94,25 +94,26 @@ namespace CosmosDbSampleApp
             if (PersonListViewModel?.IsDeletingPerson ?? false)
             {
                 await Application.Current.MainPage.DisplayAlert("Delete Failed", "Previous Delete Request In Progress", "Ok");
-                return;
             }
-
-            PersonListViewModel.IsDeletingPerson = true;
-
-            try
+            else
             {
-                await DocumentDbService.Delete(personSelected.Id);
+                PersonListViewModel.IsDeletingPerson = true;
 
-                Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList?.BeginRefresh());
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
-                DebugService.PrintException(ex);
-            }
-            finally
-            {
-                PersonListViewModel.IsDeletingPerson = false;
+                try
+                {
+                    await DocumentDbService.Delete(personSelected.Id);
+
+                    Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList?.BeginRefresh());
+                }
+                catch (Exception ex)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
+                    DebugService.PrintException(ex);
+                }
+                finally
+                {
+                    PersonListViewModel.IsDeletingPerson = false;
+                }
             }
         }
 
