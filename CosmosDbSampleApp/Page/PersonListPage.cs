@@ -47,9 +47,6 @@ namespace CosmosDbSampleApp
 
             var relativeLayout = new RelativeLayout();
 
-            Func<RelativeLayout, double> getActivityIndicatorWidth = (p) => activityIndicator.Measure(p.Width, p.Height).Request.Width;
-            Func<RelativeLayout, double> getActivityIndicatorHeight = (p) => activityIndicator.Measure(p.Width, p.Height).Request.Height;
-
             relativeLayout.Children.Add(PersonList,
                                        Constraint.Constant(0),
                                        Constraint.Constant(0));
@@ -67,6 +64,9 @@ namespace CosmosDbSampleApp
             Content = relativeLayout;
 
             Title = PageTitles.PersonListPage;
+
+            double getActivityIndicatorWidth(RelativeLayout p) => activityIndicator.Measure(p.Width, p.Height).Request.Width;
+            double getActivityIndicatorHeight(RelativeLayout p) => activityIndicator.Measure(p.Width, p.Height).Request.Height;
         }
         #endregion
 
