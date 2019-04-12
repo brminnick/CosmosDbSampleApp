@@ -26,7 +26,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="NUnit" Version="2.6.4" />
-        <PackageReference Include="Xamarin.UITest" Version="2.2.7.2001-dev" />
+        <PackageReference Include="Xamarin.UITest" Version="2.2.7.2002-dev" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AppInitializer.cs" />
@@ -41,20 +41,6 @@
     <ItemGroup>
         <Folder Include="Tests\" />
         <Folder Include="Pages\" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\CosmosDbSampleApp.iOS\CosmosDbSampleApp.iOS.csproj">
-            <Project>{0D33938C-EB02-437F-A395-6BA569C7F6A1}</Project>
-            <Name>CosmosDbSampleApp.iOS</Name>
-            <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-            <Private>False</Private>
-        </ProjectReference>
-        <ProjectReference Include="..\CosmosDbSampleApp.Droid\CosmosDbSampleApp.Droid.csproj">
-            <Project>{97D57FF9-B8E6-4C33-A10B-8A87063605F4}</Project>
-            <Name>CosmosDbSampleApp.Droid</Name>
-            <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-            <Private>False</Private>
-        </ProjectReference>
     </ItemGroup>
     <Import Project="..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems" Label="Shared" Condition="Exists('..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems')" />
     <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
