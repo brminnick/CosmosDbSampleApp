@@ -26,7 +26,7 @@ namespace CosmosDbSampleApp.UITests
 
         #region Methods
         [SetUp]
-        async Task TestSetup()
+        public async Task TestSetup()
         {
             App = AppInitializer.StartApp(_platform);
 
@@ -38,7 +38,7 @@ namespace CosmosDbSampleApp.UITests
         }
 
         [TearDown]
-        async Task TestTearDown()
+        public async Task TestTearDown()
         {
             try
             {
