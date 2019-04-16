@@ -1,9 +1,8 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
 
 using NUnit.Framework;
 
 using Xamarin.UITest;
-using System.Threading.Tasks;
 
 namespace CosmosDbSampleApp.UITests
 {
@@ -29,8 +28,6 @@ namespace CosmosDbSampleApp.UITests
 
             //Assert
             Assert.IsTrue(PersonListPage.DoesContactExist(TestConstants.TestContactName));
-
-            await TestTearDown().ConfigureAwait(false);
         }
 
         [Test]
@@ -49,8 +46,6 @@ namespace CosmosDbSampleApp.UITests
 
             //Assert
             Assert.IsFalse(PersonListPage.DoesContactExist(TestConstants.TestContactName));
-
-            await TestTearDown().ConfigureAwait(false);
         }
     }
 }

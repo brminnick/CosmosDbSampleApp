@@ -10,8 +10,7 @@ namespace CosmosDbSampleApp.UITests
         {
         }
 
-        [Ignore]
-        [Test]
+        [Test, Ignore("REPL only used for manually exploring app")]
         public void ReplTest() => App.Repl();
     }
 }

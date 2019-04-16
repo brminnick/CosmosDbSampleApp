@@ -26,22 +26,23 @@ namespace CosmosDbSampleApp.UITests
 
         #region Methods
         [SetUp]
-        public virtual void TestSetup()
+        async Task TestSetup()
         {
             App = AppInitializer.StartApp(_platform);
 
             PersonListPage = new PersonListPage(App, PageTitles.PersonListPage);
             AddPersonPage = new AddPersonPage(App, PageTitles.AddPersonPage);
 
-            PersonListPage.WaitForPageToLoad().GetAwaiter().GetResult();
+            await PersonListPage.WaitForPageToLoad().ConfigureAwait(false);
             App.Screenshot("App Launched");
         }
 
-        protected async Task TestTearDown()
+        [TearDown]
+        async Task TestTearDown()
         {
             try
             {
-                await PersonListPage.WaitForPageToLoad();
+                await PersonListPage.WaitForPageToLoad().ConfigureAwait(false);
             }
             catch
             {
