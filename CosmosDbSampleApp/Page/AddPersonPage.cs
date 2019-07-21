@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using Xamarin.Forms;
 
@@ -26,7 +27,7 @@ namespace CosmosDbSampleApp
                 Priority = 0,
                 AutomationId = AutomationIdConstants.AddPersonPage_SaveButton
             };
-            saveButtonToolBar.SetBinding(ToolbarItem.CommandProperty, nameof(ViewModel.SaveButtonCommand));
+            saveButtonToolBar.SetBinding(ToolbarItem.CommandProperty, nameof(AddPersonViewModel.SaveButtonCommand));
             ToolbarItems.Add(saveButtonToolBar);
 
             var cancelButtonToolbarItem = new ToolbarItem
@@ -47,9 +48,9 @@ namespace CosmosDbSampleApp
                 AutomationId = AutomationIdConstants.AddPersonPage_AgeEntry,
                 ReturnType = ReturnType.Go,
             };
-            ageEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.AgeEntryText));
-            ageEntry.SetBinding(Entry.ReturnCommandProperty, nameof(ViewModel.SaveButtonCommand));
-            ageEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsBusy), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsBusy));
+            ageEntry.SetBinding(Entry.TextProperty, nameof(AddPersonViewModel.AgeEntryText));
+            ageEntry.SetBinding(Entry.ReturnCommandProperty, nameof(AddPersonViewModel.SaveButtonCommand));
+            ageEntry.SetBinding(IsEnabledProperty, new Binding(nameof(AddPersonViewModel.IsBusy), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsBusy));
 
             var nameLabel = new Label { Text = "Name" };
 
@@ -60,12 +61,12 @@ namespace CosmosDbSampleApp
                 ReturnCommand = new Command(() => ageEntry.Focus()),
                 ReturnType = ReturnType.Next
             };
-            _nameEntry.SetBinding(Entry.TextProperty, nameof(ViewModel.NameEntryText));
-            _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.IsBusy), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsBusy));
+            _nameEntry.SetBinding(Entry.TextProperty, nameof(AddPersonViewModel.NameEntryText));
+            _nameEntry.SetBinding(IsEnabledProperty, new Binding(nameof(AddPersonViewModel.IsBusy), BindingMode.Default, new InverseBooleanConverter(), ViewModel.IsBusy));
 
             _activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.AddPersonPage_ActivityIndicator };
-            _activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsBusy));
-            _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsBusy));
+            _activityIndicator.SetBinding(IsVisibleProperty, nameof(AddPersonViewModel.IsBusy));
+            _activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(AddPersonViewModel.IsBusy));
 
             Padding = new Thickness(20, 20, 20, 0);
 
@@ -89,15 +90,15 @@ namespace CosmosDbSampleApp
         {
             base.OnAppearing();
 
-            _nameEntry.Focus();
+            Device.BeginInvokeOnMainThread(() => _nameEntry.Focus());
         }
 
-        void HandleCancelButtonToolbarItemClicked(object sender, EventArgs e)
+        async void HandleCancelButtonToolbarItemClicked(object sender, EventArgs e)
         {
             if (_activityIndicator.IsRunning)
                 return;
 
-            PopPageFromNavigationStack();
+            await PopPageFromNavigationStack();
         }
 
         void HandleError(object sender, string message)
@@ -105,11 +106,8 @@ namespace CosmosDbSampleApp
             Device.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", message, "ok"));
         }
 
-        void HandleSaveCompleted(object sender, EventArgs e) => PopPageFromNavigationStack();
+        async void HandleSaveCompleted(object sender, EventArgs e) => await PopPageFromNavigationStack();
 
-        void PopPageFromNavigationStack()
-        {
-            Device.BeginInvokeOnMainThread(async () => await Navigation.PopModalAsync());
-        }
+        Task PopPageFromNavigationStack() => Device.InvokeOnMainThreadAsync(Navigation.PopModalAsync);
     }
 }

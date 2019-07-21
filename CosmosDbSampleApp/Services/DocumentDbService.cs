@@ -15,7 +15,15 @@ namespace CosmosDbSampleApp
     public static class DocumentDbService
     {
         #region Constant Fields
-        static readonly DocumentClient _readonlyClient = new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadOnlyPrimaryKey);
+        static readonly Lazy<DocumentClient> _readonlyClientHolder = new Lazy<DocumentClient>(() => new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadOnlyPrimaryKey));
+        static readonly Lazy<DocumentClient> _readWriteClientHolder = new Lazy<DocumentClient>(() =>
+        {
+            if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
+                throw new DocumentDbException("Invalid ReadWrite Primary Key");
+
+            return new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
+        });
+
         static readonly Uri _documentCollectionUri = UriFactory.CreateDocumentCollectionUri(PersonModel.DatabaseId, PersonModel.CollectionId);
         #endregion
 
@@ -23,16 +31,21 @@ namespace CosmosDbSampleApp
         static int _networkIndicatorCount = 0;
         #endregion
 
+        #region Properties
+        static DocumentClient ReadOnlyClient => _readonlyClientHolder.Value;
+        static DocumentClient ReadWriteClient => _readWriteClientHolder.Value;
+        #endregion
+
         #region Methods
         public static async Task<List<T>> GetAll<T>() where T : CosmosDbModel<T>
         {
-            SetActivityIndicatorStatus(true);
+            await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
                 var resultList = new List<T>();
 
-                var queryable = _readonlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name)).AsDocumentQuery();
+                var queryable = ReadOnlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name)).AsDocumentQuery();
 
                 while (queryable.HasMoreResults)
                 {
@@ -44,18 +57,17 @@ namespace CosmosDbSampleApp
             }
             finally
             {
-                SetActivityIndicatorStatus(false);
+                await SetActivityIndicatorStatus(false).ConfigureAwait(false);
             }
         }
 
         public static async Task<T> Get<T>(string id)
         {
-            SetActivityIndicatorStatus(true);
+            await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-
-                var result = await _readonlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
+                var result = await ReadOnlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (result.StatusCode != HttpStatusCode.Created)
                     return default;
@@ -64,101 +76,91 @@ namespace CosmosDbSampleApp
             }
             finally
             {
-                SetActivityIndicatorStatus(false);
+                await SetActivityIndicatorStatus(false).ConfigureAwait(false);
             }
         }
 
         public static async Task<Document> Update<T>(T document) where T : CosmosDbModel<T>
         {
-            SetActivityIndicatorStatus(true);
+            await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-                var documentClient = GetReadWriteDocumentClient();
-
-                return await documentClient?.ReplaceDocumentAsync(CreateDocumentUri(document.Id), document);
+                return await ReadWriteClient.ReplaceDocumentAsync(CreateDocumentUri(document.Id), document).ConfigureAwait(false);
             }
             finally
             {
-                SetActivityIndicatorStatus(false);
+                await SetActivityIndicatorStatus(false).ConfigureAwait(false);
             }
         }
 
         public static async Task<Document> Create<T>(T document) where T : CosmosDbModel<T>
         {
-            SetActivityIndicatorStatus(true);
+            await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-                var documentClient = GetReadWriteDocumentClient();
-
-                return await documentClient?.CreateDocumentAsync(_documentCollectionUri, document);
+                return await ReadWriteClient.CreateDocumentAsync(_documentCollectionUri, document).ConfigureAwait(false);
             }
             finally
             {
-                SetActivityIndicatorStatus(false);
+                await SetActivityIndicatorStatus(false).ConfigureAwait(false);
             }
         }
 
         public static async Task Delete(string id)
         {
-            SetActivityIndicatorStatus(true);
+            await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-                var documentClient = GetReadWriteDocumentClient();
-
-                var result = await documentClient.DeleteDocumentAsync(CreateDocumentUri(id));
+                var result = await ReadWriteClient.DeleteDocumentAsync(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (!IsSuccessStatusCode(result.StatusCode))
                     throw new Exception($"Delete Failed: {result?.StatusCode}");
             }
             finally
             {
-                SetActivityIndicatorStatus(false);
+                await SetActivityIndicatorStatus(false).ConfigureAwait(false);
             }
-
         }
 
         static Uri CreateDocumentUri(string id) =>
             UriFactory.CreateDocumentUri(PersonModel.DatabaseId, PersonModel.CollectionId, id);
 
-        static DocumentClient GetReadWriteDocumentClient()
-        {
-            if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
-                throw new DocumentDbException("Invalid ReadWrite Primary Key");
-
-            return new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
-        }
-
-        static void SetActivityIndicatorStatus(bool isNetworkConnectionActive)
+        static Task SetActivityIndicatorStatus(bool isNetworkConnectionActive)
         {
             if (isNetworkConnectionActive)
             {
                 _networkIndicatorCount++;
-                Device.BeginInvokeOnMainThread(() => Application.Current.MainPage.IsBusy = true);
+                return Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = true);
             }
-            else if (--_networkIndicatorCount <= 0)
+
+            if (--_networkIndicatorCount <= 0)
             {
                 _networkIndicatorCount = 0;
-                Device.BeginInvokeOnMainThread(() => Application.Current.MainPage.IsBusy = false);
+                return Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = false);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        static bool IsSuccessStatusCode(in HttpStatusCode statusCode) => (int)statusCode >= 200 && (int)statusCode <= 299;
+        #endregion
+
+        #region Classes
+        class DocumentDbException : Exception
+        {
+            public DocumentDbException(in string message) : base(message)
+            {
+
+            }
+
+            public DocumentDbException()
+            {
+
             }
         }
-
-        static bool IsSuccessStatusCode(HttpStatusCode statusCode) => (int)statusCode >= 200 && (int)statusCode <= 299;
         #endregion
-    }
-
-    public class DocumentDbException : Exception
-    {
-        public DocumentDbException(string message) : base(message)
-        {
-
-        }
-
-        public DocumentDbException()
-        {
-
-        }
     }
 }

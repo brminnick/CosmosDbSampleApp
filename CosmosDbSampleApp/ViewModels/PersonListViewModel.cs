@@ -29,8 +29,7 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Properties
-        public ICommand PullToRefreshCommand => _pullToRefreshCommand ??
-            (_pullToRefreshCommand = new AsyncCommand(UpdatePersonList, continueOnCapturedContext: false));
+        public ICommand PullToRefreshCommand => _pullToRefreshCommand ?? (_pullToRefreshCommand = new AsyncCommand(UpdatePersonList));
 
         public IList<PersonModel> PersonList
         {
@@ -54,9 +53,10 @@ namespace CosmosDbSampleApp
         #region Methods
         async Task UpdatePersonList()
         {
+            IsRefreshing = true;
+
             try
             {
-                IsRefreshing = true;
                 PersonList = await DocumentDbService.GetAll<PersonModel>().ConfigureAwait(false);
             }
             catch (Exception e)
@@ -70,7 +70,7 @@ namespace CosmosDbSampleApp
             }
         }
 
-        void OnErrorTriggered(string message) => _errorTriggeredEventManager.HandleEvent(this, message, nameof(ErrorTriggered));
+        void OnErrorTriggered(in string message) => _errorTriggeredEventManager.HandleEvent(this, message, nameof(ErrorTriggered));
         #endregion
     }
 }

@@ -36,7 +36,7 @@ namespace CosmosDbSampleApp
 
         #region Properties
         public ICommand SaveButtonCommand => _saveButtonCommand ??
-            (_saveButtonCommand = new AsyncCommand(ExecuteSaveButtonCommand, continueOnCapturedContext: false));
+            (_saveButtonCommand = new AsyncCommand(() => ExecuteSaveButtonCommand(AgeEntryText, NameEntryText)));
 
         public string AgeEntryText
         {
@@ -58,9 +58,9 @@ namespace CosmosDbSampleApp
         #endregion
 
         #region Methods
-        async Task ExecuteSaveButtonCommand()
+        async Task ExecuteSaveButtonCommand(string ageEntryText, string nameEntryText)
         {
-            var ageParseSucceeded = int.TryParse(AgeEntryText, out var age);
+            var ageParseSucceeded = int.TryParse(ageEntryText, out var age);
             if (!ageParseSucceeded)
             {
                 OnSaveErrorred("Age Must Be A Whole Number");
@@ -69,7 +69,7 @@ namespace CosmosDbSampleApp
 
             var person = new PersonModel
             {
-                Name = NameEntryText,
+                Name = nameEntryText,
                 Age = age
             };
 
@@ -96,7 +96,7 @@ namespace CosmosDbSampleApp
         }
 
         void OnSaveCompleted() => _saveCompletedEventManager.HandleEvent(this, EventArgs.Empty, nameof(SaveCompleted));
-        void OnSaveErrorred(string message) => _saveErroredEventManager.HandleEvent(this, message, nameof(SaveErrored));
+        void OnSaveErrorred(in string message) => _saveErroredEventManager.HandleEvent(this, message, nameof(SaveErrored));
         #endregion
     }
 }

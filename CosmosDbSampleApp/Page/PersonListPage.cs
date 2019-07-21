@@ -19,7 +19,7 @@ namespace CosmosDbSampleApp
 
             _addButtonToolBarItem = new ToolbarItem
             {
-                Icon = "Add",
+                IconImageSource = "Add",
                 AutomationId = AutomationIdConstants.PersonListPage_AddButton
             };
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
@@ -34,16 +34,16 @@ namespace CosmosDbSampleApp
                 AutomationId = AutomationIdConstants.PersonListPage_PersonList
             };
             PersonList.ItemTapped += HandleItemTapped;
-            PersonList.SetBinding(ListView.IsRefreshingProperty, nameof(ViewModel.IsRefreshing));
-            PersonList.SetBinding(ListView.ItemsSourceProperty, nameof(ViewModel.PersonList));
-            PersonList.SetBinding(ListView.RefreshCommandProperty, nameof(ViewModel.PullToRefreshCommand));
+            PersonList.SetBinding(ListView.IsRefreshingProperty, nameof(PersonListViewModel.IsRefreshing));
+            PersonList.SetBinding(ListView.ItemsSourceProperty, nameof(PersonListViewModel.PersonList));
+            PersonList.SetBinding(ListView.RefreshCommandProperty, nameof(PersonListViewModel.PullToRefreshCommand));
 
             var activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.PersonListPage_ActivityIndicator };
-            activityIndicator.SetBinding(IsVisibleProperty, nameof(ViewModel.IsDeletingPerson));
-            activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(ViewModel.IsDeletingPerson));
+            activityIndicator.SetBinding(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson));
+            activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(PersonListViewModel.IsDeletingPerson));
 
             var whiteOverlayBoxView = new BoxView { BackgroundColor = new Color(1, 1, 1, 0.75) };
-            whiteOverlayBoxView.SetBinding(IsVisibleProperty, nameof(ViewModel.IsDeletingPerson));
+            whiteOverlayBoxView.SetBinding(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson));
 
             var relativeLayout = new RelativeLayout();
 
@@ -87,8 +87,8 @@ namespace CosmosDbSampleApp
 
         void HandleItemTapped(object sender, ItemTappedEventArgs e)
         {
-            var listView = sender as ListView;
-            listView.SelectedItem = null;
+            if (sender is ListView listView)
+                listView.SelectedItem = null;
         }
 
         void HandleAddButtonClicked(object sender, EventArgs e)

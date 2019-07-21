@@ -29,6 +29,7 @@
         <MtouchArch>x86_64</MtouchArch>
         <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
         <PlatformTarget>x86</PlatformTarget>
+        <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
         <DebugType>pdbonly</DebugType>
@@ -44,6 +45,7 @@
         <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
         <PlatformTarget>x86</PlatformTarget>
         <MtouchUseLlvm>true</MtouchUseLlvm>
+        <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
         <DebugType>pdbonly</DebugType>
@@ -53,12 +55,13 @@
         <WarningLevel>4</WarningLevel>
         <CodesignKey>iPhone Developer</CodesignKey>
         <DeviceSpecificBuild>true</DeviceSpecificBuild>
-        <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
         <MtouchLink>SdkOnly</MtouchLink>
         <MtouchArch>x86_64</MtouchArch>
         <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
         <PlatformTarget>x86</PlatformTarget>
         <MtouchUseLlvm>true</MtouchUseLlvm>
+        <MtouchFloat32>true</MtouchFloat32>
+        <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
         <DebugSymbols>true</DebugSymbols>
@@ -81,6 +84,7 @@
         <MtouchArch>ARM64</MtouchArch>
         <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
         <PlatformTarget>x86</PlatformTarget>
+        <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="System" />
@@ -92,11 +96,11 @@
         <Reference Include="System.Net.Http" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="2.1.0" />
-        <PackageReference Include="Xamarin.Forms" Version="3.6.0.293080" />
-        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.3.0" />
+        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="3.0.0-pre4" />
+        <PackageReference Include="Xamarin.Forms" Version="4.2.0.608146-pre1" />
+        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.5.1" />
         <PackageReference Include="Xamarin.TestCloud.Agent">
-          <Version>0.21.7</Version>
+          <Version>0.21.8</Version>
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
