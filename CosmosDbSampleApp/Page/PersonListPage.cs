@@ -22,6 +22,7 @@ namespace CosmosDbSampleApp
 
             PersonList = new ListView(ListViewCachingStrategy.RecycleElement)
             {
+                RefreshControlColor = Color.Black,
                 ItemTemplate = new DataTemplate(typeof(PersonListViewCell)),
                 IsPullToRefreshEnabled = true,
                 BackgroundColor = ColorConstants.PageBackgroundColor,

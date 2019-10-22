@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Linq;
 using Xamarin.Forms;
 
@@ -10,8 +9,8 @@ namespace CosmosDbSampleApp
         readonly Label _titleLabel, _descriptionLabel;
         readonly MenuItem _deleteAction;
 
-        PersonListPage _personListPage;
-        PersonListViewModel _personListViewModel;
+        PersonListPage? _personListPage;
+        PersonListViewModel? _personListViewModel;
 
         public PersonListViewCell()
         {
@@ -51,29 +50,29 @@ namespace CosmosDbSampleApp
 
             View = gridLayout;
         }
-        PersonListPage PersonListPage => _personListPage ??= GetPersonListPage();
 
+        PersonListPage PersonListPage => _personListPage ??= GetPersonListPage();
         PersonListViewModel PersonListViewModel => _personListViewModel ??= GetPersonListViewModel();
 
         protected override void OnBindingContextChanged()
         {
             base.OnBindingContextChanged();
 
-            var model = BindingContext as PersonModel;
+            var person = (PersonModel)BindingContext;
 
-            _titleLabel.Text = model?.Name;
-            _descriptionLabel.Text = $"Age {model?.Age.ToString()}";
+            _titleLabel.Text = person.Name;
+            _descriptionLabel.Text = $"Age {person.Age.ToString()}";
         }
 
         async void HandleDeleteClicked(object sender, EventArgs e)
         {
-            var personSelected = BindingContext as PersonModel;
+            var personSelected = (PersonModel)BindingContext;
 
             if (PersonListViewModel?.IsDeletingPerson ?? false)
             {
                 await Application.Current.MainPage.DisplayAlert("Delete Failed", "Previous Delete Request In Progress", "Ok");
             }
-            else
+            else if (PersonListViewModel != null)
             {
                 PersonListViewModel.IsDeletingPerson = true;
 
@@ -81,7 +80,7 @@ namespace CosmosDbSampleApp
                 {
                     await DocumentDbService.Delete(personSelected.Id);
 
-                    Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList?.BeginRefresh());
+                    Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList.BeginRefresh());
                 }
                 catch (Exception ex)
                 {
@@ -95,12 +94,12 @@ namespace CosmosDbSampleApp
             }
         }
 
-        PersonListViewModel GetPersonListViewModel() => GetPersonListPage().BindingContext as PersonListViewModel;
+        PersonListViewModel GetPersonListViewModel() => (PersonListViewModel)GetPersonListPage().BindingContext;
 
         PersonListPage GetPersonListPage()
         {
-            var navigationPage = Application.Current.MainPage as NavigationPage;
-            return navigationPage.Navigation.NavigationStack.FirstOrDefault() as PersonListPage;
+            var navigationPage = (NavigationPage)Application.Current.MainPage;
+            return (PersonListPage)navigationPage.Navigation.NavigationStack.First();
         }
     }
 }

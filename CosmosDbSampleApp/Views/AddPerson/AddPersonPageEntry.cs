@@ -7,6 +7,8 @@ namespace CosmosDbSampleApp
     {
         public AddPersonPageEntry()
         {
+            ClearButtonVisibility = ClearButtonVisibility.WhileEditing;
+
             switch (Device.RuntimePlatform)
             {
                 case Device.iOS:

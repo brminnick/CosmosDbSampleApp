@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace CosmosDbSampleApp
 {
@@ -10,6 +11,6 @@ namespace CosmosDbSampleApp
         public string TypeName => typeof(T).Name;
 
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
     }
 }

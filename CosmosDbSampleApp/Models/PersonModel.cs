@@ -4,7 +4,7 @@ namespace CosmosDbSampleApp
 {
     public class PersonModel : CosmosDbModel<PersonModel>
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int Age { get; set; }
 
 		public static explicit operator PersonModel(Document doc)

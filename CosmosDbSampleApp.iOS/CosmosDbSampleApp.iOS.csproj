@@ -9,6 +9,8 @@
         <RootNamespace>CosmosDbSampleApp.iOS</RootNamespace>
         <AssemblyName>CosmosDbSampleApp.iOS</AssemblyName>
         <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+        <LangVersion>8.0</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
         <DebugSymbols>true</DebugSymbols>

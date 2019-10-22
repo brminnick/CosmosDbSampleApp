@@ -11,8 +11,8 @@ namespace CosmosDbSampleApp
         readonly WeakEventManager<string> _saveErroredEventManager = new WeakEventManager<string>();
         readonly WeakEventManager _saveCompletedEventManager = new WeakEventManager();
 
-        ICommand _saveButtonCommand;
-        string _ageEntryText, _nameEntryText;
+        ICommand? _saveButtonCommand;
+        string _ageEntryText = string.Empty, _nameEntryText = string.Empty;
         bool _isBusy;
 
         public event EventHandler<string> SaveErrored
