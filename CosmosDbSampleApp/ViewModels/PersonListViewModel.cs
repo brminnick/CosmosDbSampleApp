@@ -1,9 +1,10 @@
 using System;
-using System.Windows.Input;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using AsyncAwaitBestPractices.MVVM;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using AsyncAwaitBestPractices;
+using AsyncAwaitBestPractices.MVVM;
 
 namespace CosmosDbSampleApp
 {
@@ -12,8 +13,8 @@ namespace CosmosDbSampleApp
         readonly WeakEventManager<string> _errorTriggeredEventManager = new WeakEventManager<string>();
 
         bool _isDeletingPerson, _isRefreshing;
-        IList<PersonModel> _personList;
-        ICommand _pullToRefreshCommand;
+        IList<PersonModel> _personList = Enumerable.Empty<PersonModel>().ToList();
+        ICommand? _pullToRefreshCommand;
 
         public event EventHandler<string> ErrorTriggered
         {

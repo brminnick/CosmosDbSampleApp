@@ -61,7 +61,7 @@ namespace CosmosDbSampleApp
                 var result = await ReadOnlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (result.StatusCode != HttpStatusCode.Created)
-                    return default;
+                    throw new DocumentDbException("Get Failed");
 
                 return result;
             }
