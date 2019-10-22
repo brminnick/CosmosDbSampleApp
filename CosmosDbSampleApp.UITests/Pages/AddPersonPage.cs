@@ -1,19 +1,16 @@
-﻿using Xamarin.UITest;
-using Xamarin.UITest.iOS;
-using Xamarin.UITest.Android;
-
-using Query = System.Func<Xamarin.UITest.Queries.AppQuery, Xamarin.UITest.Queries.AppQuery>;
+﻿using System;
 using CosmosDbSampleApp.Shared;
+using Xamarin.UITest;
+using Xamarin.UITest.Android;
+using Xamarin.UITest.iOS;
+using Query = System.Func<Xamarin.UITest.Queries.AppQuery, Xamarin.UITest.Queries.AppQuery>;
 
 namespace CosmosDbSampleApp.UITests
 {
     public class AddPersonPage : BasePage
     {
-        #region Constant Fields
         readonly Query _saveButton, _cancelButton, _ageEntry, _nameEntry, _activityIndicator;
-        #endregion
 
-        #region Constructors
         public AddPersonPage(IApp app, string pageTitle) : base(app, pageTitle)
         {
             _saveButton = x => x.Marked(AutomationIdConstants.AddPersonPage_SaveButton);
@@ -22,7 +19,6 @@ namespace CosmosDbSampleApp.UITests
             _nameEntry = x => x.Marked(AutomationIdConstants.AddPersonPage_NameEntry);
             _activityIndicator = x => x.Marked(AutomationIdConstants.AddPersonPage_ActivityIndicator);
         }
-        #endregion
 
         public void TapSaveButton()
         {
@@ -34,6 +30,8 @@ namespace CosmosDbSampleApp.UITests
                 case AndroidApp androidApp:
                     androidApp.Tap(x => x.Marked("Save"));
                     break;
+                default:
+                    throw new NotSupportedException();
             }
 
             App.Screenshot("Save Button Tapped");
@@ -49,6 +47,8 @@ namespace CosmosDbSampleApp.UITests
                 case AndroidApp androidApp:
                     androidApp.Tap(x => x.Marked("Cancel"));
                     break;
+                default:
+                    throw new NotSupportedException();
             }
 
             App.Screenshot("Cancel Button Tapped");

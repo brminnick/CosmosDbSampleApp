@@ -1,38 +1,27 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Xamarin.UITest;
-
-using Xamarin.UITest.iOS;
-using Xamarin.UITest.Android;
-
 using CosmosDbSampleApp.Shared;
-
+using Xamarin.UITest;
+using Xamarin.UITest.Android;
+using Xamarin.UITest.iOS;
 using Query = System.Func<Xamarin.UITest.Queries.AppQuery, Xamarin.UITest.Queries.AppQuery>;
 
 namespace CosmosDbSampleApp.UITests
 {
     public class PersonListPage : BasePage
     {
-        #region Constant Fields
         readonly Query _personList, _activityIndicator, _addButton;
-        #endregion
 
-        #region Constructors
         public PersonListPage(IApp app, string pageTitle) : base(app, pageTitle)
         {
             _personList = x => x.Marked(AutomationIdConstants.PersonListPage_PersonList);
             _activityIndicator = x => x.Marked(AutomationIdConstants.PersonListPage_ActivityIndicator);
             _addButton = x => x.Marked(AutomationIdConstants.PersonListPage_AddButton);
         }
-        #endregion
 
-        #region Properties
         public bool IsRefreshIndicatorDisplayed => GetIsRefreshIndicatorDisplayed();
-        #endregion
 
-        #region Methods
         public override async Task WaitForPageToLoad()
         {
             await base.WaitForPageToLoad().ConfigureAwait(false);
@@ -51,6 +40,8 @@ namespace CosmosDbSampleApp.UITests
                 case AndroidApp androidApp:
                     androidApp.Tap(x => x.Class("ActionMenuItemView"));
                     break;
+                default:
+                    throw new NotSupportedException();
             }
 
             App.Screenshot("Add Button Tapped");
@@ -161,18 +152,11 @@ namespace CosmosDbSampleApp.UITests
             }
         }
 
-        bool GetIsRefreshIndicatorDisplayed()
+        bool GetIsRefreshIndicatorDisplayed() => App switch
         {
-            switch (App)
-            {
-                case AndroidApp androidApp:
-                    return (bool)(androidApp?.Query(x => x.Class("SwipeRefreshLayout")?.Invoke("isRefreshing"))?.FirstOrDefault() ?? false);
-                case iOSApp iosApp:
-                    return App?.Query(x => x.Class("UIRefreshControl"))?.Any() ?? false;
-                default:
-                    throw new NotSupportedException("Platform Not Supported");
-            }
-        }
-        #endregion
+            AndroidApp androidApp => (bool)(androidApp?.Query(x => x.Class("SwipeRefreshLayout")?.Invoke("isRefreshing"))?.FirstOrDefault() ?? false),
+            iOSApp iosApp => App.Query(x => x.Class("UIRefreshControl"))?.Any() ?? false,
+            _ => throw new NotSupportedException("Platform Not Supported"),
+        };
     }
 }

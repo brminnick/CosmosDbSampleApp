@@ -3,18 +3,15 @@ using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
-
 using Xamarin.Forms;
 
 namespace CosmosDbSampleApp
 {
     public static class DocumentDbService
     {
-        #region Constant Fields
         static readonly Lazy<DocumentClient> _readonlyClientHolder = new Lazy<DocumentClient>(() => new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadOnlyPrimaryKey));
         static readonly Lazy<DocumentClient> _readWriteClientHolder = new Lazy<DocumentClient>(() =>
         {
@@ -25,18 +22,12 @@ namespace CosmosDbSampleApp
         });
 
         static readonly Uri _documentCollectionUri = UriFactory.CreateDocumentCollectionUri(PersonModel.DatabaseId, PersonModel.CollectionId);
-        #endregion
 
-        #region Fields
         static int _networkIndicatorCount = 0;
-        #endregion
 
-        #region Properties
         static DocumentClient ReadOnlyClient => _readonlyClientHolder.Value;
         static DocumentClient ReadWriteClient => _readWriteClientHolder.Value;
-        #endregion
 
-        #region Methods
         public static async Task<List<T>> GetAll<T>() where T : CosmosDbModel<T>
         {
             await SetActivityIndicatorStatus(true).ConfigureAwait(false);
@@ -146,9 +137,7 @@ namespace CosmosDbSampleApp
         }
 
         static bool IsSuccessStatusCode(in HttpStatusCode statusCode) => (int)statusCode >= 200 && (int)statusCode <= 299;
-        #endregion
 
-        #region Classes
         class DocumentDbException : Exception
         {
             public DocumentDbException(in string message) : base(message)
@@ -161,6 +150,5 @@ namespace CosmosDbSampleApp
 
             }
         }
-        #endregion
     }
 }

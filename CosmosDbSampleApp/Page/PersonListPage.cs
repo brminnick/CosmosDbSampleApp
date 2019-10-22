@@ -1,18 +1,13 @@
 using System;
-
-using Xamarin.Forms;
-
 using CosmosDbSampleApp.Shared;
+using Xamarin.Forms;
 
 namespace CosmosDbSampleApp
 {
     public class PersonListPage : BaseContentPage<PersonListViewModel>
     {
-        #region Constant Fields
         readonly ToolbarItem _addButtonToolBarItem;
-        #endregion
 
-        #region Constructors
         public PersonListPage()
         {
             ViewModel.ErrorTriggered += HandleErrorTriggered;
@@ -68,13 +63,9 @@ namespace CosmosDbSampleApp
             double getActivityIndicatorWidth(RelativeLayout p) => activityIndicator.Measure(p.Width, p.Height).Request.Width;
             double getActivityIndicatorHeight(RelativeLayout p) => activityIndicator.Measure(p.Width, p.Height).Request.Height;
         }
-        #endregion
 
-        #region Properties
         public ListView PersonList { get; }
-        #endregion
 
-        #region Methods
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -102,6 +93,5 @@ namespace CosmosDbSampleApp
                 });
             });
         }
-        #endregion
     }
 }

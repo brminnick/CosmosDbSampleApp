@@ -1,7 +1,6 @@
 using System;
 using System.Windows.Input;
 using System.Threading.Tasks;
-
 using AsyncAwaitBestPractices;
 using AsyncAwaitBestPractices.MVVM;
 
@@ -9,18 +8,13 @@ namespace CosmosDbSampleApp
 {
     public class AddPersonViewModel : BaseViewModel
     {
-        #region Constant Fields
         readonly WeakEventManager<string> _saveErroredEventManager = new WeakEventManager<string>();
         readonly WeakEventManager _saveCompletedEventManager = new WeakEventManager();
-        #endregion
 
-        #region Fields
         ICommand _saveButtonCommand;
         string _ageEntryText, _nameEntryText;
         bool _isBusy;
-        #endregion
 
-        #region Events
         public event EventHandler<string> SaveErrored
         {
             add => _saveErroredEventManager.AddEventHandler(value);
@@ -32,11 +26,8 @@ namespace CosmosDbSampleApp
             add => _saveCompletedEventManager.AddEventHandler(value);
             remove => _saveCompletedEventManager.RemoveEventHandler(value);
         }
-        #endregion
 
-        #region Properties
-        public ICommand SaveButtonCommand => _saveButtonCommand ??
-            (_saveButtonCommand = new AsyncCommand(() => ExecuteSaveButtonCommand(AgeEntryText, NameEntryText)));
+        public ICommand SaveButtonCommand => _saveButtonCommand ??= new AsyncCommand(() => ExecuteSaveButtonCommand(AgeEntryText, NameEntryText));
 
         public string AgeEntryText
         {
@@ -55,9 +46,7 @@ namespace CosmosDbSampleApp
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
 
-        #region Methods
         async Task ExecuteSaveButtonCommand(string ageEntryText, string nameEntryText)
         {
             var ageParseSucceeded = int.TryParse(ageEntryText, out var age);
@@ -97,6 +86,5 @@ namespace CosmosDbSampleApp
 
         void OnSaveCompleted() => _saveCompletedEventManager.HandleEvent(this, EventArgs.Empty, nameof(SaveCompleted));
         void OnSaveErrorred(in string message) => _saveErroredEventManager.HandleEvent(this, message, nameof(SaveErrored));
-        #endregion
     }
 }

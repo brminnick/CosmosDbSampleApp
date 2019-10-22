@@ -10,21 +10,14 @@ namespace CosmosDbSampleApp.UITests
     [TestFixture(Platform.iOS)]
     public abstract class BaseTest
     {
-        #region Constant Fields
         readonly Platform _platform;
-        #endregion
 
-        #region Constructors
         protected BaseTest(Platform platform) => _platform = platform;
-        #endregion
 
-        #region Properties
         protected IApp App { get; private set; }
         protected PersonListPage PersonListPage { get; private set; }
-        protected AddPersonPage AddPersonPage { get; private set; }
-        #endregion
+        protected AddPersonPage? AddPersonPage { get; private set; }
 
-        #region Methods
         [SetUp]
         public async Task TestSetup()
         {
@@ -57,7 +50,6 @@ namespace CosmosDbSampleApp.UITests
                 await PersonListPage.WaitForPullToRefreshIndicatorToDisappear().ConfigureAwait(false);
             }
         }
-        #endregion
     }
 }
 

@@ -9,12 +9,10 @@ namespace CosmosDbSampleApp
 {
     public class AddPersonPage : BaseContentPage<AddPersonViewModel>
     {
-        #region Constant Fields
         const string _saveButtonToolBarItemText = "Save";
         const string _cancelButtonToolBarItemText = "Cancel";
         readonly AddPersonPageEntry _nameEntry;
         readonly ActivityIndicator _activityIndicator;
-        #endregion  
 
         public AddPersonPage()
         {

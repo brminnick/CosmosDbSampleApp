@@ -1,24 +1,18 @@
 using System;
 using System.Net;
 using System.Linq;
-
 using Xamarin.Forms;
 
 namespace CosmosDbSampleApp
 {
     public class PersonListViewCell : ViewCell
     {
-        #region Constant Fields
         readonly Label _titleLabel, _descriptionLabel;
         readonly MenuItem _deleteAction;
-        #endregion
 
-        #region Fields
         PersonListPage _personListPage;
         PersonListViewModel _personListViewModel;
-        #endregion
 
-        #region Constructors
         public PersonListViewCell()
         {
             _titleLabel = new Label
@@ -57,25 +51,9 @@ namespace CosmosDbSampleApp
 
             View = gridLayout;
         }
-        #endregion
+        PersonListPage PersonListPage => _personListPage ??= GetPersonListPage();
 
-        #region Finalizers
-        ~PersonListViewCell()
-        {
-            ContextActions.Remove(_deleteAction);
-            _deleteAction.Clicked -= HandleDeleteClicked;
-        }
-        #endregion
-
-        #region Properties
-        PersonListPage PersonListPage => _personListPage ??
-            (_personListPage = GetPersonListPage());
-
-        PersonListViewModel PersonListViewModel => _personListViewModel ??
-            (_personListViewModel = GetPersonListViewModel());
-        #endregion
-
-        #region Methods
+        PersonListViewModel PersonListViewModel => _personListViewModel ??= GetPersonListViewModel();
 
         protected override void OnBindingContextChanged()
         {
@@ -124,6 +102,5 @@ namespace CosmosDbSampleApp
             var navigationPage = Application.Current.MainPage as NavigationPage;
             return navigationPage.Navigation.NavigationStack.FirstOrDefault() as PersonListPage;
         }
-        #endregion
     }
 }

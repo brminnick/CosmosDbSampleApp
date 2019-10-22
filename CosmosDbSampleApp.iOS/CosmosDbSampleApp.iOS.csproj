@@ -96,9 +96,9 @@
         <Reference Include="System.Net.Http" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="3.0.0-pre4" />
-        <PackageReference Include="Xamarin.Forms" Version="4.2.0.608146-pre1" />
-        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.5.1" />
+        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="3.1.0" />
+        <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
+        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.8.1" />
         <PackageReference Include="Xamarin.TestCloud.Agent">
           <Version>0.21.8</Version>
         </PackageReference>
