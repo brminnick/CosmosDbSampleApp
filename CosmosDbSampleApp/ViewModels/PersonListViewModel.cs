@@ -1,9 +1,9 @@
 using System;
-using System.Windows.Input;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using AsyncAwaitBestPractices.MVVM;
+using System.Windows.Input;
 using AsyncAwaitBestPractices;
+using AsyncAwaitBestPractices.MVVM;
 
 namespace CosmosDbSampleApp
 {
@@ -12,8 +12,7 @@ namespace CosmosDbSampleApp
         readonly WeakEventManager<string> _errorTriggeredEventManager = new WeakEventManager<string>();
 
         bool _isDeletingPerson, _isRefreshing;
-        IList<PersonModel> _personList;
-        ICommand _pullToRefreshCommand;
+        ICommand? _pullToRefreshCommand;
 
         public event EventHandler<string> ErrorTriggered
         {
@@ -21,13 +20,9 @@ namespace CosmosDbSampleApp
             remove => _errorTriggeredEventManager.RemoveEventHandler(value);
         }
 
-        public ICommand PullToRefreshCommand => _pullToRefreshCommand ??= new AsyncCommand(UpdatePersonList);
+        public ObservableCollection<PersonModel> PersonList = new ObservableCollection<PersonModel>();
 
-        public IList<PersonModel> PersonList
-        {
-            get => _personList;
-            set => SetProperty(ref _personList, value);
-        }
+        public ICommand PullToRefreshCommand => _pullToRefreshCommand ??= new AsyncCommand(UpdatePersonList);
 
         public bool IsDeletingPerson
         {
@@ -43,11 +38,14 @@ namespace CosmosDbSampleApp
 
         async Task UpdatePersonList()
         {
-            IsRefreshing = true;
+            PersonList.Clear();
 
             try
             {
-                PersonList = await DocumentDbService.GetAll<PersonModel>().ConfigureAwait(false);
+                await foreach(var person in DocumentDbService.GetAll<PersonModel>())
+                {
+                    PersonList.Add(person);
+                }
             }
             catch (Exception e)
             {

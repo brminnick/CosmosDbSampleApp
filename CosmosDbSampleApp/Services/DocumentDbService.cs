@@ -28,23 +28,21 @@ namespace CosmosDbSampleApp
         static DocumentClient ReadOnlyClient => _readonlyClientHolder.Value;
         static DocumentClient ReadWriteClient => _readWriteClientHolder.Value;
 
-        public static async Task<List<T>> GetAll<T>() where T : CosmosDbModel<T>
+        public static async IAsyncEnumerable<T> GetAll<T>() where T : CosmosDbModel<T>
         {
             await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-                var resultList = new List<T>();
-
                 var queryable = ReadOnlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name)).AsDocumentQuery();
 
                 while (queryable.HasMoreResults)
                 {
                     var response = await queryable.ExecuteNextAsync<T>().ConfigureAwait(false);
-                    resultList.AddRange(response);
-                }
 
-                return resultList;
+                    foreach (var person in response)
+                        yield return person;
+                }
             }
             finally
             {
@@ -61,7 +59,7 @@ namespace CosmosDbSampleApp
                 var result = await ReadOnlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (result.StatusCode != HttpStatusCode.Created)
-                    return default;
+                    throw new DocumentDbException("Get Failed");
 
                 return result;
             }
@@ -108,7 +106,7 @@ namespace CosmosDbSampleApp
                 var result = await ReadWriteClient.DeleteDocumentAsync(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (!IsSuccessStatusCode(result.StatusCode))
-                    throw new Exception($"Delete Failed: {result?.StatusCode}");
+                    throw new Exception($"Delete Failed: {result.StatusCode}");
             }
             finally
             {
