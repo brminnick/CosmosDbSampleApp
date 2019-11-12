@@ -1,10 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AsyncAwaitBestPractices;
 using AsyncAwaitBestPractices.MVVM;
+using Xamarin.Forms.Xaml;
 
 namespace CosmosDbSampleApp
 {
@@ -13,8 +16,13 @@ namespace CosmosDbSampleApp
         readonly WeakEventManager<string> _errorTriggeredEventManager = new WeakEventManager<string>();
 
         bool _isDeletingPerson, _isRefreshing;
-        IList<PersonModel> _personList = Enumerable.Empty<PersonModel>().ToList();
         ICommand? _pullToRefreshCommand;
+
+        public PersonListViewModel()
+        {
+            //Ensure Observable Collection is Thread Safe https://codetraveler.io/2019/09/11/using-observablecollection-in-a-multi-threaded-xamarin-forms-application/
+            Xamarin.Forms.BindingBase.EnableCollectionSynchronization(PersonList, null, ObservableCollectionCallback);
+        }
 
         public event EventHandler<string> ErrorTriggered
         {
@@ -24,11 +32,7 @@ namespace CosmosDbSampleApp
 
         public ICommand PullToRefreshCommand => _pullToRefreshCommand ??= new AsyncCommand(UpdatePersonList);
 
-        public IList<PersonModel> PersonList
-        {
-            get => _personList;
-            set => SetProperty(ref _personList, value);
-        }
+        public ObservableCollection<PersonModel> PersonList { get; } = new ObservableCollection<PersonModel>();
 
         public bool IsDeletingPerson
         {
@@ -44,20 +48,32 @@ namespace CosmosDbSampleApp
 
         async Task UpdatePersonList()
         {
-            IsRefreshing = true;
+            PersonList.Clear();
 
             try
             {
-                PersonList = await DocumentDbService.GetAll<PersonModel>().ConfigureAwait(false);
+                await foreach (var personModel in DocumentDbService.GetAll<PersonModel>().ConfigureAwait(false))
+                {
+                    PersonList.Add(personModel);
+                }
             }
             catch (Exception e)
             {
-                OnErrorTriggered(e.InnerException.Message);
+                OnErrorTriggered(e.InnerException is null ? e.Message : e.InnerException.Message);
                 DebugService.PrintException(e);
             }
             finally
             {
                 IsRefreshing = false;
+            }
+        }
+
+        //Ensure Observable Collection is Thread Safe https://codetraveler.io/2019/09/11/using-observablecollection-in-a-multi-threaded-xamarin-forms-application/
+        void ObservableCollectionCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess)
+        {
+            lock (collection)
+            {
+                accessMethod?.Invoke();
             }
         }
 

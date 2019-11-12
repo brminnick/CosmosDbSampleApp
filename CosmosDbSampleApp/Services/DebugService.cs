@@ -19,6 +19,7 @@ namespace CosmosDbSampleApp
             Debug.WriteLine($"Line Number: {lineNumber}");
             Debug.WriteLine($"Caller Name: {callerMemberName}");
             Debug.WriteLine($"File Name: {fileName}");
+            Debug.WriteLine(exception);
         }
     }
 }

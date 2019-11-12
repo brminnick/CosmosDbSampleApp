@@ -28,23 +28,22 @@ namespace CosmosDbSampleApp
         static DocumentClient ReadOnlyClient => _readonlyClientHolder.Value;
         static DocumentClient ReadWriteClient => _readWriteClientHolder.Value;
 
-        public static async Task<List<T>> GetAll<T>() where T : CosmosDbModel<T>
+        public static async IAsyncEnumerable<T> GetAll<T>() where T : CosmosDbModel<T>
         {
             await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-                var resultList = new List<T>();
 
                 var queryable = ReadOnlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name)).AsDocumentQuery();
 
                 while (queryable.HasMoreResults)
                 {
-                    var response = await queryable.ExecuteNextAsync<T>().ConfigureAwait(false);
-                    resultList.AddRange(response);
-                }
+                    var responseList = await queryable.ExecuteNextAsync<T>().ConfigureAwait(false);
 
-                return resultList;
+                    foreach (var response in responseList)
+                        yield return response;
+                }
             }
             finally
             {
