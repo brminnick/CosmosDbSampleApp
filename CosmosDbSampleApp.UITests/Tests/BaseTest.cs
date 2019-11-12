@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
-
-using Xamarin.UITest;
-using CosmosDbSampleApp.Shared;
+﻿using System;
 using System.Threading.Tasks;
+using CosmosDbSampleApp.Shared;
+using NUnit.Framework;
+using Xamarin.UITest;
 
 namespace CosmosDbSampleApp.UITests
 {
@@ -12,19 +12,23 @@ namespace CosmosDbSampleApp.UITests
     {
         readonly Platform _platform;
 
+        IApp? _app;
+        PersonListPage? _personListPage;
+        AddPersonPage? _addPersonPage;
+
         protected BaseTest(Platform platform) => _platform = platform;
 
-        protected IApp App { get; private set; }
-        protected PersonListPage PersonListPage { get; private set; }
-        protected AddPersonPage? AddPersonPage { get; private set; }
+        protected IApp App => _app ?? throw new NullReferenceException();
+        protected PersonListPage PersonListPage => _personListPage ?? throw new NullReferenceException();
+        protected AddPersonPage AddPersonPage => _addPersonPage ?? throw new NullReferenceException();
 
         [SetUp]
         public async Task TestSetup()
         {
-            App = AppInitializer.StartApp(_platform);
+            _app = AppInitializer.StartApp(_platform);
 
-            PersonListPage = new PersonListPage(App, PageTitles.PersonListPage);
-            AddPersonPage = new AddPersonPage(App, PageTitles.AddPersonPage);
+            _personListPage = new PersonListPage(App, PageTitles.PersonListPage);
+            _addPersonPage = new AddPersonPage(App, PageTitles.AddPersonPage);
 
             await PersonListPage.WaitForPageToLoad().ConfigureAwait(false);
             App.Screenshot("App Launched");

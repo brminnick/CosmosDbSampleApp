@@ -139,22 +139,11 @@ namespace CosmosDbSampleApp.UITests
 
         void ScrollToQuery(string text, int timeoutInSeconds = 10) => ScrollToQuery(x => x.Marked(text), timeoutInSeconds);
 
-
-        void ScrollToQuery(Query query, int timeoutInSeconds = 10)
-        {
-            try
-            {
-                App.ScrollDownTo(query, timeout: TimeSpan.FromSeconds(timeoutInSeconds));
-            }
-            catch
-            {
-                App.ScrollUpTo(query, timeout: TimeSpan.FromSeconds(timeoutInSeconds));
-            }
-        }
+        void ScrollToQuery(Query query, int timeoutInSeconds = 10) => App.ScrollDownTo(query, timeout: TimeSpan.FromSeconds(timeoutInSeconds));
 
         bool GetIsRefreshIndicatorDisplayed() => App switch
         {
-            AndroidApp androidApp => (bool)(androidApp?.Query(x => x.Class("SwipeRefreshLayout")?.Invoke("isRefreshing"))?.FirstOrDefault() ?? false),
+            AndroidApp androidApp => (bool)androidApp.Query(x => x.Class("ListViewRenderer_SwipeRefreshLayoutWithFixedNestedScrolling").Invoke("isRefreshing")).First(),
             iOSApp iosApp => App.Query(x => x.Class("UIRefreshControl"))?.Any() ?? false,
             _ => throw new NotSupportedException("Platform Not Supported"),
         };

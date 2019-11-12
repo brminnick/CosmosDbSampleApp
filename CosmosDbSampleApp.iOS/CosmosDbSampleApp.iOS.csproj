@@ -11,6 +11,7 @@
         <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
         <LangVersion>8.0</LangVersion>
         <Nullable>enable</Nullable>
+        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
         <DebugSymbols>true</DebugSymbols>

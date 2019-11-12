@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections;
 using CosmosDbSampleApp.Shared;
 using Xamarin.Forms;
 
@@ -20,7 +22,7 @@ namespace CosmosDbSampleApp
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
             ToolbarItems.Add(_addButtonToolBarItem);
 
-            PersonList = new ListView(ListViewCachingStrategy.RecycleElement)
+            var personList = new ListView(ListViewCachingStrategy.RecycleElement)
             {
                 RefreshControlColor = Color.Black,
                 ItemTemplate = new DataTemplate(typeof(PersonListViewCell)),
@@ -29,10 +31,10 @@ namespace CosmosDbSampleApp
                 HasUnevenRows = true,
                 AutomationId = AutomationIdConstants.PersonListPage_PersonList
             };
-            PersonList.ItemTapped += HandleItemTapped;
-            PersonList.SetBinding(ListView.IsRefreshingProperty, nameof(PersonListViewModel.IsRefreshing));
-            PersonList.SetBinding(ListView.ItemsSourceProperty, nameof(PersonListViewModel.PersonList));
-            PersonList.SetBinding(ListView.RefreshCommandProperty, nameof(PersonListViewModel.PullToRefreshCommand));
+            personList.ItemTapped += HandleItemTapped;
+            personList.SetBinding(ListView.IsRefreshingProperty, nameof(PersonListViewModel.IsRefreshing));
+            personList.SetBinding(ListView.ItemsSourceProperty, nameof(PersonListViewModel.PersonList));
+            personList.SetBinding(ListView.RefreshCommandProperty, nameof(PersonListViewModel.PullToRefreshCommand));
 
             var activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.PersonListPage_ActivityIndicator };
             activityIndicator.SetBinding(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson));
@@ -43,7 +45,7 @@ namespace CosmosDbSampleApp
 
             var relativeLayout = new RelativeLayout();
 
-            relativeLayout.Children.Add(PersonList,
+            relativeLayout.Children.Add(personList,
                                        Constraint.Constant(0),
                                        Constraint.Constant(0));
 
@@ -65,13 +67,15 @@ namespace CosmosDbSampleApp
             double getActivityIndicatorHeight(RelativeLayout p) => activityIndicator.Measure(p.Width, p.Height).Request.Height;
         }
 
-        public ListView PersonList { get; }
-
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            Device.BeginInvokeOnMainThread(PersonList.BeginRefresh);
+            if (Content is Layout<View> layout
+                && layout.Children.OfType<ListView>().First() is ListView listView)
+            {
+                listView.BeginRefresh();
+            }
         }
 
         void HandleErrorTriggered(object sender, string e) =>
@@ -79,8 +83,8 @@ namespace CosmosDbSampleApp
 
         void HandleItemTapped(object sender, ItemTappedEventArgs e)
         {
-            if (sender is ListView listView)
-                listView.SelectedItem = null;
+            var listView = (ListView)sender;
+            listView.SelectedItem = null;
         }
 
         void HandleAddButtonClicked(object sender, EventArgs e)

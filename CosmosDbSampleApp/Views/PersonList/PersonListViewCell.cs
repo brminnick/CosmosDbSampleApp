@@ -68,19 +68,18 @@ namespace CosmosDbSampleApp
         {
             var personSelected = (PersonModel)BindingContext;
 
-            if (PersonListViewModel?.IsDeletingPerson ?? false)
+            if (PersonListViewModel.IsDeletingPerson)
             {
                 await Application.Current.MainPage.DisplayAlert("Delete Failed", "Previous Delete Request In Progress", "Ok");
             }
-            else if (PersonListViewModel != null)
+            else
             {
                 PersonListViewModel.IsDeletingPerson = true;
 
                 try
                 {
                     await DocumentDbService.Delete(personSelected.Id);
-
-                    Device.BeginInvokeOnMainThread(() => PersonListPage?.PersonList.BeginRefresh());
+                    TriggerPullToRefresh(PersonListViewModel);
                 }
                 catch (Exception ex)
                 {
@@ -92,6 +91,8 @@ namespace CosmosDbSampleApp
                     PersonListViewModel.IsDeletingPerson = false;
                 }
             }
+
+            static void TriggerPullToRefresh(in PersonListViewModel personListViewModel) => personListViewModel.IsRefreshing = true;
         }
 
         PersonListViewModel GetPersonListViewModel() => (PersonListViewModel)GetPersonListPage().BindingContext;

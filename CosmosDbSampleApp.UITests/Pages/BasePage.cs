@@ -5,7 +5,7 @@ namespace CosmosDbSampleApp.UITests
 {
     public abstract class BasePage
     {
-        protected BasePage(IApp app, string pageTitle)
+        protected BasePage(in IApp app, in string pageTitle)
         {
             App = app;
             Title = pageTitle;

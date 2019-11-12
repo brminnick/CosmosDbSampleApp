@@ -17,6 +17,7 @@
         <TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
         <LangVersion>8.0</LangVersion>
         <Nullable>enable</Nullable>
+        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
