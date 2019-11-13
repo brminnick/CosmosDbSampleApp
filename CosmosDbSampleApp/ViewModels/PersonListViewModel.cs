@@ -52,7 +52,7 @@ namespace CosmosDbSampleApp
 
             try
             {
-                await foreach (var personModel in DocumentDbService.GetAll<PersonModel>().ConfigureAwait(false))
+                await foreach (var personModel in DocumentDbService.GetAll<PersonModel>())
                 {
                     PersonList.Add(personModel);
                 }

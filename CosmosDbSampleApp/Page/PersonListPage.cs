@@ -22,19 +22,22 @@ namespace CosmosDbSampleApp
             _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
             ToolbarItems.Add(_addButtonToolBarItem);
 
-            var personList = new ListView(ListViewCachingStrategy.RecycleElement)
+            var personList = new CollectionView
             {
-                RefreshControlColor = Color.Black,
-                ItemTemplate = new DataTemplate(typeof(PersonListViewCell)),
-                IsPullToRefreshEnabled = true,
+                ItemTemplate = new PersonListDataTemplate(),
                 BackgroundColor = ColorConstants.PageBackgroundColor,
-                HasUnevenRows = true,
                 AutomationId = AutomationIdConstants.PersonListPage_PersonList
             };
-            personList.ItemTapped += HandleItemTapped;
-            personList.SetBinding(ListView.IsRefreshingProperty, nameof(PersonListViewModel.IsRefreshing));
-            personList.SetBinding(ListView.ItemsSourceProperty, nameof(PersonListViewModel.PersonList));
-            personList.SetBinding(ListView.RefreshCommandProperty, nameof(PersonListViewModel.PullToRefreshCommand));
+            personList.SelectionChanged += HandleSelectionChanged;
+            personList.SetBinding(CollectionView.ItemsSourceProperty, nameof(PersonListViewModel.PersonList));
+
+            var refreshView = new RefreshView
+            {
+                RefreshColor = Color.Black,
+                Content = personList
+            };
+            refreshView.SetBinding(RefreshView.IsRefreshingProperty, nameof(PersonListViewModel.IsRefreshing));
+            refreshView.SetBinding(RefreshView.CommandProperty, nameof(PersonListViewModel.PullToRefreshCommand));
 
             var activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.PersonListPage_ActivityIndicator };
             activityIndicator.SetBinding(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson));
@@ -45,7 +48,7 @@ namespace CosmosDbSampleApp
 
             var relativeLayout = new RelativeLayout();
 
-            relativeLayout.Children.Add(personList,
+            relativeLayout.Children.Add(refreshView,
                                        Constraint.Constant(0),
                                        Constraint.Constant(0));
 
@@ -72,18 +75,19 @@ namespace CosmosDbSampleApp
             base.OnAppearing();
 
             if (Content is Layout<View> layout
-                && layout.Children.OfType<ListView>().First() is ListView listView)
+                && layout.Children.OfType<RefreshView>().First() is RefreshView refreshView)
             {
-                listView.BeginRefresh();
+                refreshView.IsRefreshing = true;
             }
         }
 
         void HandleErrorTriggered(object sender, string e) =>
             Device.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", e, "OK "));
 
-        void HandleItemTapped(object sender, ItemTappedEventArgs e)
+
+        void HandleSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var listView = (ListView)sender;
+            var listView = (CollectionView)sender;
             listView.SelectedItem = null;
         }
 
