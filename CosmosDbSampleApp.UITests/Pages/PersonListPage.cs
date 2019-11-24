@@ -53,9 +53,9 @@ namespace CosmosDbSampleApp.UITests
             App.Screenshot("Activity Indicator Appeared");
         }
 
-        public void WaitForNoActivityIndicator()
+        public void WaitForNoActivityIndicator(int timeoutInSeconds = 60)
         {
-            App.WaitForNoElement(_activityIndicator);
+            App.WaitForNoElement(_activityIndicator, timeout: TimeSpan.FromSeconds(timeoutInSeconds));
             App.Screenshot("Activity Indicator Disappeared");
         }
 
@@ -92,7 +92,7 @@ namespace CosmosDbSampleApp.UITests
             }
         }
 
-        public async Task WaitForPullToRefreshIndicatorToDisappear(int timeoutInSeconds = 30)
+        public async Task WaitForPullToRefreshIndicatorToDisappear(int timeoutInSeconds = 60)
         {
             int counter = 0;
 

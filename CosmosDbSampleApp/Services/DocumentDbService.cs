@@ -23,7 +23,7 @@ namespace CosmosDbSampleApp
 
         static readonly Uri _documentCollectionUri = UriFactory.CreateDocumentCollectionUri(PersonModel.DatabaseId, PersonModel.CollectionId);
 
-        static int _networkIndicatorCount = 0;
+        static int _networkIndicatorCount;
 
         static DocumentClient ReadOnlyClient => _readonlyClientHolder.Value;
         static DocumentClient ReadWriteClient => _readWriteClientHolder.Value;
@@ -59,8 +59,8 @@ namespace CosmosDbSampleApp
             {
                 var result = await ReadOnlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
 
-                if (result.StatusCode != HttpStatusCode.Created)
-                    throw new DocumentDbException("Get Failed");
+                if (!IsSuccessStatusCode(result.StatusCode))
+                    throw new DocumentDbException($"Get {id} Failed");
 
                 return result;
             }
@@ -107,7 +107,7 @@ namespace CosmosDbSampleApp
                 var result = await ReadWriteClient.DeleteDocumentAsync(CreateDocumentUri(id)).ConfigureAwait(false);
 
                 if (!IsSuccessStatusCode(result.StatusCode))
-                    throw new Exception($"Delete Failed: {result?.StatusCode}");
+                    throw new Exception($"Delete Failed: {result.StatusCode}");
             }
             finally
             {
@@ -118,21 +118,18 @@ namespace CosmosDbSampleApp
         static Uri CreateDocumentUri(string id) =>
             UriFactory.CreateDocumentUri(PersonModel.DatabaseId, PersonModel.CollectionId, id);
 
-        static Task SetActivityIndicatorStatus(bool isNetworkConnectionActive)
+        static async ValueTask SetActivityIndicatorStatus(bool isNetworkConnectionActive)
         {
             if (isNetworkConnectionActive)
             {
                 _networkIndicatorCount++;
-                return Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = true);
+                await Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = true).ConfigureAwait(false);
             }
-
-            if (--_networkIndicatorCount <= 0)
+            else if (--_networkIndicatorCount <= 0)
             {
                 _networkIndicatorCount = 0;
-                return Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = false);
+                await Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = false).ConfigureAwait(false);
             }
-
-            return Task.CompletedTask;
         }
 
         static bool IsSuccessStatusCode(in HttpStatusCode statusCode) => (int)statusCode >= 200 && (int)statusCode <= 299;

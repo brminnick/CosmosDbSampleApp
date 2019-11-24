@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Collections;
 using CosmosDbSampleApp.Shared;
 using Xamarin.Forms;
 
@@ -8,19 +7,17 @@ namespace CosmosDbSampleApp
 {
     public class PersonListPage : BaseContentPage<PersonListViewModel>
     {
-        readonly ToolbarItem _addButtonToolBarItem;
-
         public PersonListPage()
         {
             ViewModel.ErrorTriggered += HandleErrorTriggered;
 
-            _addButtonToolBarItem = new ToolbarItem
+            var addButtonToolBarItem = new ToolbarItem
             {
                 IconImageSource = "Add",
                 AutomationId = AutomationIdConstants.PersonListPage_AddButton
             };
-            _addButtonToolBarItem.Clicked += HandleAddButtonClicked;
-            ToolbarItems.Add(_addButtonToolBarItem);
+            addButtonToolBarItem.Clicked += HandleAddButtonClicked;
+            ToolbarItems.Add(addButtonToolBarItem);
 
             var personList = new CollectionView
             {
@@ -59,15 +56,15 @@ namespace CosmosDbSampleApp
                                        Constraint.RelativeToParent(parent => parent.Height));
 
             relativeLayout.Children.Add(activityIndicator,
-                                       Constraint.RelativeToParent(parent => parent.Width / 2 - getActivityIndicatorWidth(parent) / 2),
-                                       Constraint.RelativeToParent(parent => parent.Height / 2 - getActivityIndicatorHeight(parent) / 2));
+                                       Constraint.RelativeToParent(parent => parent.Width / 2 - getActivityWidth(parent, activityIndicator) / 2),
+                                       Constraint.RelativeToParent(parent => parent.Height / 2 - getActivityHeight(parent, activityIndicator) / 2));
 
             Content = relativeLayout;
 
             Title = PageTitles.PersonListPage;
 
-            double getActivityIndicatorWidth(RelativeLayout p) => activityIndicator.Measure(p.Width, p.Height).Request.Width;
-            double getActivityIndicatorHeight(RelativeLayout p) => activityIndicator.Measure(p.Width, p.Height).Request.Height;
+            static double getActivityWidth(RelativeLayout parent, View view) => view.Measure(parent.Width, parent.Height).Request.Width;
+            static double getActivityHeight(RelativeLayout parent, View view) => view.Measure(parent.Width, parent.Height).Request.Height;
         }
 
         protected override void OnAppearing()
