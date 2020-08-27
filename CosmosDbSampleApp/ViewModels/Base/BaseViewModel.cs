@@ -29,6 +29,6 @@ namespace CosmosDbSampleApp
         }
 
         void OnPropertyChanged([CallerMemberName] in string name = "") =>
-            _notifyPropertyChangedEventManager.HandleEvent(this, new PropertyChangedEventArgs(name), nameof(INotifyPropertyChanged.PropertyChanged));
+            _notifyPropertyChangedEventManager.RaiseEvent(this, new PropertyChangedEventArgs(name), nameof(INotifyPropertyChanged.PropertyChanged));
     }
 }

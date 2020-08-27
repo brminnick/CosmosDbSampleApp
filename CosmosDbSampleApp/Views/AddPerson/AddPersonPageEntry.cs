@@ -3,7 +3,7 @@ using Xamarin.Forms;
 
 namespace CosmosDbSampleApp
 {
-    public class AddPersonPageEntry : Entry
+    class AddPersonPageEntry : Entry
     {
         public AddPersonPageEntry()
         {

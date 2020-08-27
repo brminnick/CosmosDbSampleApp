@@ -1,57 +1,42 @@
 using Xamarin.Forms;
+using Xamarin.Forms.Markup;
+using static CosmosDbSampleApp.MarkupExtensions;
+using static Xamarin.Forms.Markup.GridRowsColumns;
 
 namespace CosmosDbSampleApp
 {
-    public class PersonListDataTemplate : DataTemplate
+    class PersonListDataTemplate : DataTemplate
     {
         public PersonListDataTemplate() : base(CreateDataTemplate)
         {
         }
 
-        static Grid CreateDataTemplate()
+        static Grid CreateDataTemplate() => new Grid
         {
-            var titleLabel = new BlackLabel(16)
+            RowSpacing = 1,
+
+            RowDefinitions = Rows.Define(
+                    (Row.Name, AbsoluteGridLength(20)),
+                    (Row.Age, AbsoluteGridLength(20)),
+                    (Row.Separator, AbsoluteGridLength(1))),
+
+            Children =
             {
-                VerticalTextAlignment = TextAlignment.Start,
-                FontAttributes = FontAttributes.Bold
-            };
-            titleLabel.SetBinding(Label.TextProperty, nameof(PersonModel.Name));
+                new BlackLabel(16).CenterVertical().Font(bold: true)
+                    .Row(Row.Name)
+                    .Bind(Label.TextProperty, nameof(PersonModel.Name)),
 
-            var detailLabel = new BlackLabel(13)
-            {
-                FontAttributes = FontAttributes.Italic,
-            };
-            detailLabel.Padding = new Thickness(detailLabel.Padding.Left, detailLabel.Padding.Top, detailLabel.Padding.Right, detailLabel.Padding.Bottom + 5);
-            detailLabel.SetBinding(Label.TextProperty, nameof(PersonModel.Age));
+                new BlackLabel(13).Font(italic: true)
+                    .Row(Row.Age)
+                    .Invoke(detailLabel => detailLabel.Padding = new Thickness(detailLabel.Padding.Left, detailLabel.Padding.Top, detailLabel.Padding.Right, detailLabel.Padding.Bottom + 5))
+                    .Bind(Label.TextProperty, nameof(PersonModel.Age)),
 
-            var dividingLine = new BoxView
-            {
-                Color = Color.DarkGray,
-                Margin = new Thickness(5, 0)
-            };
+                new BoxView { Color = Color.DarkGray, Margin = new Thickness(5, 0) }
+                    .Row(Row.Separator)
+            }
+        };
 
-            var grid = new Grid
-            {
-                RowSpacing = 1,
-
-                RowDefinitions =
-                {
-                    new RowDefinition { Height = new GridLength(20, GridUnitType.Absolute) },
-                    new RowDefinition { Height = new GridLength(20, GridUnitType.Absolute) },
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Absolute) },
-                },
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-                }
-            };
-
-            grid.Children.Add(titleLabel, 0, 0);
-            grid.Children.Add(detailLabel, 0, 1);
-            grid.Children.Add(dividingLine, 0, 2);
-
-            return grid;
-        }
+        enum Row { Name, Age, Separator }
 
         class BlackLabel : Label
         {

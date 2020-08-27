@@ -2,69 +2,53 @@ using System;
 using System.Linq;
 using CosmosDbSampleApp.Shared;
 using Xamarin.Forms;
+using Xamarin.Forms.Markup;
+using static Xamarin.Forms.Markup.GridRowsColumns;
 
 namespace CosmosDbSampleApp
 {
-    public class PersonListPage : BaseContentPage<PersonListViewModel>
+    class PersonListPage : BaseContentPage<PersonListViewModel>
     {
         public PersonListPage()
         {
+            Title = PageTitles.PersonListPage;
             ViewModel.ErrorTriggered += HandleErrorTriggered;
 
-            var addButtonToolBarItem = new ToolbarItem
+            ToolbarItems.Add(new ToolbarItem
             {
                 IconImageSource = "Add",
                 AutomationId = AutomationIdConstants.PersonListPage_AddButton
-            };
-            addButtonToolBarItem.Clicked += HandleAddButtonClicked;
-            ToolbarItems.Add(addButtonToolBarItem);
+            }.Invoke(addButtonToolBarItem => addButtonToolBarItem.Clicked += HandleAddButtonClicked));
 
-            var personList = new CollectionView
+            Content = new Grid
             {
-                ItemTemplate = new PersonListDataTemplate(),
-                BackgroundColor = ColorConstants.PageBackgroundColor,
-                AutomationId = AutomationIdConstants.PersonListPage_PersonList
+                RowDefinitions = Rows.Define(Star),
+                ColumnDefinitions = Columns.Define(Star),
+
+                Children =
+                {
+                    new RefreshView
+                    {
+                        RefreshColor = Color.Black,
+                        Content = new CollectionView
+                        {
+                            ItemTemplate = new PersonListDataTemplate(),
+                            BackgroundColor = ColorConstants.PageBackgroundColor,
+                            AutomationId = AutomationIdConstants.PersonListPage_PersonList
+                        }.Bind(CollectionView.ItemsSourceProperty, nameof(PersonListViewModel.PersonList))
+                         .Invoke(personList => personList.SelectionChanged += HandleSelectionChanged)
+
+                    }.Bind(RefreshView.IsRefreshingProperty, nameof(PersonListViewModel.IsRefreshing))
+                     .Bind(RefreshView.CommandProperty, nameof(PersonListViewModel.PullToRefreshCommand)),
+
+                    new BoxView { BackgroundColor = new Color(1, 1, 1, 0.75) }.CenterExpand()
+                        .Bind(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson)),
+
+                    new ActivityIndicator { AutomationId = AutomationIdConstants.PersonListPage_ActivityIndicator }.Center()
+                        .Bind(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson))
+                        .Bind(ActivityIndicator.IsRunningProperty, nameof(PersonListViewModel.IsDeletingPerson))
+                }
             };
-            personList.SelectionChanged += HandleSelectionChanged;
-            personList.SetBinding(CollectionView.ItemsSourceProperty, nameof(PersonListViewModel.PersonList));
-
-            var refreshView = new RefreshView
-            {
-                RefreshColor = Color.Black,
-                Content = personList
-            };
-            refreshView.SetBinding(RefreshView.IsRefreshingProperty, nameof(PersonListViewModel.IsRefreshing));
-            refreshView.SetBinding(RefreshView.CommandProperty, nameof(PersonListViewModel.PullToRefreshCommand));
-
-            var activityIndicator = new ActivityIndicator { AutomationId = AutomationIdConstants.PersonListPage_ActivityIndicator };
-            activityIndicator.SetBinding(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson));
-            activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, nameof(PersonListViewModel.IsDeletingPerson));
-
-            var whiteOverlayBoxView = new BoxView { BackgroundColor = new Color(1, 1, 1, 0.75) };
-            whiteOverlayBoxView.SetBinding(IsVisibleProperty, nameof(PersonListViewModel.IsDeletingPerson));
-
-            var relativeLayout = new RelativeLayout();
-
-            relativeLayout.Children.Add(refreshView,
-                                       Constraint.Constant(0),
-                                       Constraint.Constant(0));
-
-            relativeLayout.Children.Add(whiteOverlayBoxView,
-                                       Constraint.Constant(0),
-                                       Constraint.Constant(0),
-                                       Constraint.RelativeToParent(parent => parent.Width),
-                                       Constraint.RelativeToParent(parent => parent.Height));
-
-            relativeLayout.Children.Add(activityIndicator,
-                                       Constraint.RelativeToParent(parent => parent.Width / 2 - getActivityWidth(parent, activityIndicator) / 2),
-                                       Constraint.RelativeToParent(parent => parent.Height / 2 - getActivityHeight(parent, activityIndicator) / 2));
-
-            Content = relativeLayout;
-
-            Title = PageTitles.PersonListPage;
-
-            static double getActivityWidth(RelativeLayout parent, View view) => view.Measure(parent.Width, parent.Height).Request.Width;
-            static double getActivityHeight(RelativeLayout parent, View view) => view.Measure(parent.Width, parent.Height).Request.Height;
         }
 
         protected override void OnAppearing()

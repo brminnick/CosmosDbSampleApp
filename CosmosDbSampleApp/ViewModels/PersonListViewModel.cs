@@ -8,7 +8,7 @@ using AsyncAwaitBestPractices.MVVM;
 
 namespace CosmosDbSampleApp
 {
-    public class PersonListViewModel : BaseViewModel
+    class PersonListViewModel : BaseViewModel
     {
         readonly WeakEventManager<string> _errorTriggeredEventManager = new WeakEventManager<string>();
 
@@ -74,6 +74,6 @@ namespace CosmosDbSampleApp
             }
         }
 
-        void OnErrorTriggered(in string message) => _errorTriggeredEventManager.HandleEvent(this, message, nameof(ErrorTriggered));
+        void OnErrorTriggered(in string message) => _errorTriggeredEventManager.RaiseEvent(this, message, nameof(ErrorTriggered));
     }
 }

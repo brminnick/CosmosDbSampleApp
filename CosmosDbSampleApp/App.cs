@@ -6,6 +6,8 @@ namespace CosmosDbSampleApp
     {
         public App()
         {
+            Device.SetFlags(new[] { "Markup_Experimental" });
+
             MainPage = new NavigationPage(new PersonListPage())
             {
                 BarBackgroundColor = ColorConstants.BarBackgroundColor,

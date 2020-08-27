@@ -7,7 +7,6 @@
     </PropertyGroup>
     <ItemGroup>
         <Folder Include="Constants\" />
-        <Folder Include="Converters\" />
         <Folder Include="Models\" />
         <Folder Include="Page\" />
         <Folder Include="Services\" />
@@ -15,9 +14,9 @@
         <Folder Include="Views\" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="4.1.0-pre2" />
-        <PackageReference Include="Xamarin.Forms" Version="4.4.0.991265" />
-        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.9.2" />
+        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="4.3.0-pre1" />
+        <PackageReference Include="Xamarin.Forms" Version="4.8.0.1269" />
+        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.11.6" />
     </ItemGroup>
     <Import Project="..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems" Label="Shared" Condition="Exists('..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems')" />
 </Project>

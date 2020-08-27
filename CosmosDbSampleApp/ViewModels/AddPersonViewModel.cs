@@ -8,8 +8,8 @@ namespace CosmosDbSampleApp
 {
     public class AddPersonViewModel : BaseViewModel
     {
-        readonly WeakEventManager<string> _saveErroredEventManager = new WeakEventManager<string>();
         readonly WeakEventManager _saveCompletedEventManager = new WeakEventManager();
+        readonly WeakEventManager<string> _saveErroredEventManager = new WeakEventManager<string>();
 
         ICommand? _saveButtonCommand;
         string _ageEntryText = string.Empty,
@@ -85,7 +85,7 @@ namespace CosmosDbSampleApp
             }
         }
 
-        void OnSaveCompleted() => _saveCompletedEventManager.HandleEvent(this, EventArgs.Empty, nameof(SaveCompleted));
-        void OnSaveErrorred(in string message) => _saveErroredEventManager.HandleEvent(this, message, nameof(SaveErrored));
+        void OnSaveCompleted() => _saveCompletedEventManager.RaiseEvent(this, EventArgs.Empty, nameof(SaveCompleted));
+        void OnSaveErrorred(in string message) => _saveErroredEventManager.RaiseEvent(this, message, nameof(SaveErrored));
     }
 }

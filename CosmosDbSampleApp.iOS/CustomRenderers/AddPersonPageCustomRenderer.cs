@@ -12,40 +12,46 @@ using CosmosDbSampleApp.iOS;
 [assembly: ExportRenderer(typeof(AddPersonPage), typeof(AddPersonPageCustomRenderer))]
 namespace CosmosDbSampleApp.iOS
 {
-	public class AddPersonPageCustomRenderer : PageRenderer
-	{
+    public class AddPersonPageCustomRenderer : PageRenderer
+    {
 
-		public override void ViewWillAppear(bool animated)
-		{
-			base.ViewWillAppear(animated);
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
 
-			var thisElement = (AddPersonPage)Element;
+            var thisElement = (AddPersonPage)Element;
 
-			var LeftNavList = new List<UIBarButtonItem>();
-			var rightNavList = new List<UIBarButtonItem>();
+            var leftNavList = new List<UIBarButtonItem>();
+            var rightNavList = new List<UIBarButtonItem>();
 
-			var navigationItem = NavigationController.TopViewController.NavigationItem;
+            var navigationItem = NavigationController.TopViewController.NavigationItem;
 
-			for (var i = 0; i < thisElement.ToolbarItems.Count; i++)
-			{
+            for (var i = 0; i < thisElement.ToolbarItems.Count; i++)
+            {
+                var reorder = (thisElement.ToolbarItems.Count - 1);
+                var itemPriority = thisElement.ToolbarItems[reorder - i].Priority;
 
-				var reorder = (thisElement.ToolbarItems.Count - 1);
-				var ItemPriority = thisElement.ToolbarItems[reorder - i].Priority;
+                if (itemPriority is 1)
+                {
+                    var leftNavItems = navigationItem?.RightBarButtonItems?[i];
 
-				if (ItemPriority == 1)
-				{
-					UIBarButtonItem LeftNavItems = navigationItem.RightBarButtonItems[i];
-					LeftNavList.Add(LeftNavItems);
-				}
-				else if (ItemPriority == 0)
-				{
-					UIBarButtonItem RightNavItems = navigationItem.RightBarButtonItems[i];
-					rightNavList.Add(RightNavItems);
-				}
-			}
+                    if (leftNavItems != null)
+                        leftNavList.Add(leftNavItems);
+                }
+                else if (itemPriority is 0)
+                {
+                    var rightNavItems = navigationItem?.RightBarButtonItems?[i];
 
-			navigationItem.SetLeftBarButtonItems(LeftNavList.ToArray(), false);
-			navigationItem.SetRightBarButtonItems(rightNavList.ToArray(), false);
-		}
-	}
+                    if (rightNavItems != null)
+                        rightNavList.Add(rightNavItems);
+                }
+            }
+
+            if (navigationItem != null)
+            {
+                navigationItem.SetLeftBarButtonItems(leftNavList.ToArray(), false);
+                navigationItem.SetRightBarButtonItems(rightNavList.ToArray(), false);
+            }
+        }
+    }
 }
