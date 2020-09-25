@@ -14,8 +14,8 @@
         <Folder Include="Views\" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="4.3.0-pre1" />
-        <PackageReference Include="Xamarin.Forms" Version="4.8.0.1269" />
+        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="5.0.0-pre2" />
+        <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" />
         <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.11.6" />
     </ItemGroup>
     <Import Project="..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems" Label="Shared" Condition="Exists('..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems')" />
