@@ -16,9 +16,9 @@ namespace CosmosDbSampleApp
             RowSpacing = 1,
 
             RowDefinitions = Rows.Define(
-                    (Row.Name, AbsoluteGridLength(20)),
-                    (Row.Age, AbsoluteGridLength(20)),
-                    (Row.Separator, AbsoluteGridLength(1))),
+                (Row.Name, AbsoluteGridLength(20)),
+                (Row.Age, AbsoluteGridLength(20)),
+                (Row.Separator, AbsoluteGridLength(1))),
 
             Children =
             {
