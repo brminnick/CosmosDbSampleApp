@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using CosmosDbSampleApp.Shared;
 using Xamarin.Forms;
-using Xamarin.Forms.Markup;
+using Xamarin.CommunityToolkit.Markup;
 
 namespace CosmosDbSampleApp
 {

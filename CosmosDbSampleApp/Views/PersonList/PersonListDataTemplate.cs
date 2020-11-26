@@ -1,7 +1,7 @@
 using Xamarin.Forms;
-using Xamarin.Forms.Markup;
+using Xamarin.CommunityToolkit.Markup;
 using static CosmosDbSampleApp.MarkupExtensions;
-using static Xamarin.Forms.Markup.GridRowsColumns;
+using static Xamarin.CommunityToolkit.Markup.GridRowsColumns;
 
 namespace CosmosDbSampleApp
 {
@@ -11,7 +11,7 @@ namespace CosmosDbSampleApp
         {
         }
 
-        static Grid CreateDataTemplate() => new Grid
+        static Grid CreateDataTemplate() => new()
         {
             RowSpacing = 1,
 

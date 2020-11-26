@@ -4,6 +4,7 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <Nullable>enable</Nullable>
         <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
     <ItemGroup>
         <Folder Include="Constants\" />
@@ -15,8 +16,9 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="5.0.2" />
-        <PackageReference Include="Xamarin.Forms" Version="5.0.0.1558-pre3" />
+        <PackageReference Include="Xamarin.Forms" Version="5.0.0.1709-pre4" />
         <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.12.0" />
+        <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="1.0.0-pre5" />
     </ItemGroup>
     <Import Project="..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems" Label="Shared" Condition="Exists('..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems')" />
 </Project>
