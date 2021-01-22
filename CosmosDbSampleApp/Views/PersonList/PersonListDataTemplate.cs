@@ -28,10 +28,10 @@ namespace CosmosDbSampleApp
 
                 new BlackLabel(13).Font(italic: true)
                     .Row(Row.Age)
-                    .Invoke(detailLabel => detailLabel.Padding = new Thickness(detailLabel.Padding.Left, detailLabel.Padding.Top, detailLabel.Padding.Right, detailLabel.Padding.Bottom + 5))
-                    .Bind(Label.TextProperty, nameof(PersonModel.Age)),
+                    .Bind(Label.TextProperty, nameof(PersonModel.Age))
+                    .Invoke(detailLabel => detailLabel.Padding = new Thickness(detailLabel.Padding.Left, detailLabel.Padding.Top, detailLabel.Padding.Right, detailLabel.Padding.Bottom + 5)),
 
-                new BoxView { Color = Color.DarkGray, Margin = new Thickness(5, 0) }
+                new BoxView { Color = Color.DarkGray }.Margin(5,0)
                     .Row(Row.Separator)
             }
         };

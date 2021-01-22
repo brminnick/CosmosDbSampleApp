@@ -67,7 +67,7 @@ namespace CosmosDbSampleApp
 
             try
             {
-                var result = await DocumentDbService.Create(person).ConfigureAwait(false);
+                var result = await DocumentDbService.UpsertItem(person).ConfigureAwait(false);
 
                 if (result is null)
                     OnSaveErrorred("Save Failed");

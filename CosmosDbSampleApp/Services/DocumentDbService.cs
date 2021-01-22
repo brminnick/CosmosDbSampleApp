@@ -3,30 +3,20 @@ using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents.Linq;
 using Xamarin.Forms;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 
 namespace CosmosDbSampleApp
 {
     public static class DocumentDbService
     {
-        static readonly Lazy<DocumentClient> _readonlyClientHolder = new Lazy<DocumentClient>(() => new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadOnlyPrimaryKey));
-        static readonly Lazy<DocumentClient> _readWriteClientHolder = new Lazy<DocumentClient>(() =>
-        {
-            if (DocumentDbConstants.ReadWritePrimaryKey.Equals("Add Read Write Primary Key"))
-                throw new DocumentDbException("Invalid ReadWrite Primary Key");
-
-            return new DocumentClient(new Uri(DocumentDbConstants.Url), DocumentDbConstants.ReadWritePrimaryKey);
-        });
-
-        static readonly Uri _documentCollectionUri = UriFactory.CreateDocumentCollectionUri(PersonModel.DatabaseId, PersonModel.CollectionId);
+        static readonly Container _readOnlyContainer = new CosmosClient(DocumentDbConstants.Url, DocumentDbConstants.ReadOnlyPrimaryKey).GetContainer(PersonModel.DatabaseId, PersonModel.CollectionId);
+        static readonly Container _readWriteContainer = DocumentDbConstants.ReadWritePrimaryKey == "Add Read Write Primary Key"
+                                                        ? throw new DocumentDbException("Invalid ReadWrite Primary Key")
+                                                        : new CosmosClient(DocumentDbConstants.Url, DocumentDbConstants.ReadWritePrimaryKey).GetContainer(PersonModel.DatabaseId, PersonModel.CollectionId);
 
         static int _networkIndicatorCount;
-
-        static DocumentClient ReadOnlyClient => _readonlyClientHolder.Value;
-        static DocumentClient ReadWriteClient => _readWriteClientHolder.Value;
 
         public static async IAsyncEnumerable<T> GetAll<T>() where T : CosmosDbModel<T>
         {
@@ -35,11 +25,12 @@ namespace CosmosDbSampleApp
             try
             {
 
-                var queryable = ReadOnlyClient.CreateDocumentQuery<T>(_documentCollectionUri).Where(x => x.TypeName.Equals(typeof(T).Name)).AsDocumentQuery();
+                var queryable = _readOnlyContainer.GetItemLinqQueryable<T>().Where(x => x.TypeName.Equals(typeof(T).Name));
+                var feedIterator = queryable.ToFeedIterator();
 
-                while (queryable.HasMoreResults)
+                if (feedIterator.HasMoreResults)
                 {
-                    var responseList = await queryable.ExecuteNextAsync<T>().ConfigureAwait(false);
+                    var responseList = await feedIterator.ReadNextAsync().ConfigureAwait(false);
 
                     foreach (var response in responseList)
                         yield return response;
@@ -51,18 +42,13 @@ namespace CosmosDbSampleApp
             }
         }
 
-        public static async Task<T> Get<T>(string id)
+        public static async Task<ItemResponse<T>> UpsertItem<T>(T document) where T : CosmosDbModel<T>
         {
             await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-                var result = await ReadOnlyClient.ReadDocumentAsync<T>(CreateDocumentUri(id)).ConfigureAwait(false);
-
-                if (!IsSuccessStatusCode(result.StatusCode))
-                    throw new DocumentDbException($"Get {id} Failed");
-
-                return result;
+                return await _readWriteContainer.UpsertItemAsync(document).ConfigureAwait(false);
             }
             finally
             {
@@ -70,41 +56,13 @@ namespace CosmosDbSampleApp
             }
         }
 
-        public static async Task<Document> Update<T>(T document) where T : CosmosDbModel<T>
+        public static async Task Delete<T>(string id) where T : CosmosDbModel<T>
         {
             await SetActivityIndicatorStatus(true).ConfigureAwait(false);
 
             try
             {
-                return await ReadWriteClient.ReplaceDocumentAsync(CreateDocumentUri(document.Id), document).ConfigureAwait(false);
-            }
-            finally
-            {
-                await SetActivityIndicatorStatus(false).ConfigureAwait(false);
-            }
-        }
-
-        public static async Task<Document> Create<T>(T document) where T : CosmosDbModel<T>
-        {
-            await SetActivityIndicatorStatus(true).ConfigureAwait(false);
-
-            try
-            {
-                return await ReadWriteClient.CreateDocumentAsync(_documentCollectionUri, document).ConfigureAwait(false);
-            }
-            finally
-            {
-                await SetActivityIndicatorStatus(false).ConfigureAwait(false);
-            }
-        }
-
-        public static async Task Delete(string id)
-        {
-            await SetActivityIndicatorStatus(true).ConfigureAwait(false);
-
-            try
-            {
-                var result = await ReadWriteClient.DeleteDocumentAsync(CreateDocumentUri(id)).ConfigureAwait(false);
+                var result = await _readWriteContainer.DeleteItemAsync<T>(id, PartitionKey.Null);
 
                 if (!IsSuccessStatusCode(result.StatusCode))
                     throw new Exception($"Delete Failed: {result.StatusCode}");
@@ -115,10 +73,7 @@ namespace CosmosDbSampleApp
             }
         }
 
-        static Uri CreateDocumentUri(string id) =>
-            UriFactory.CreateDocumentUri(PersonModel.DatabaseId, PersonModel.CollectionId, id);
-
-        static async ValueTask SetActivityIndicatorStatus(bool isNetworkConnectionActive)
+        static async Task SetActivityIndicatorStatus(bool isNetworkConnectionActive)
         {
             if (isNetworkConnectionActive)
             {
