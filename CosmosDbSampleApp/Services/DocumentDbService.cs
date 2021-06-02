@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
+using Xamarin.Essentials;
 
 namespace CosmosDbSampleApp
 {
@@ -78,12 +79,12 @@ namespace CosmosDbSampleApp
             if (isNetworkConnectionActive)
             {
                 _networkIndicatorCount++;
-                await Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = true).ConfigureAwait(false);
+                await MainThread.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = true).ConfigureAwait(false);
             }
             else if (--_networkIndicatorCount <= 0)
             {
                 _networkIndicatorCount = 0;
-                await Device.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = false).ConfigureAwait(false);
+                await MainThread.InvokeOnMainThreadAsync(() => Application.Current.MainPage.IsBusy = false).ConfigureAwait(false);
             }
         }
 
@@ -92,11 +93,6 @@ namespace CosmosDbSampleApp
         class DocumentDbException : Exception
         {
             public DocumentDbException(in string message) : base(message)
-            {
-
-            }
-
-            public DocumentDbException()
             {
 
             }

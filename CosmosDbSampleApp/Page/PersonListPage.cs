@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
 using CosmosDbSampleApp.Shared;
-using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Markup;
+using Xamarin.Essentials;
+using Xamarin.Forms;
 using static Xamarin.CommunityToolkit.Markup.GridRowsColumns;
 
 namespace CosmosDbSampleApp
@@ -63,7 +64,7 @@ namespace CosmosDbSampleApp
         }
 
         void HandleErrorTriggered(object sender, string e) =>
-            Device.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", e, "OK "));
+            MainThread.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", e, "OK "));
 
 
         void HandleSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -74,7 +75,7 @@ namespace CosmosDbSampleApp
 
         void HandleAddButtonClicked(object sender, EventArgs e)
         {
-            Device.BeginInvokeOnMainThread(async () =>
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await Navigation.PushModalAsync(new NavigationPage(new AddPersonPage())
                 {

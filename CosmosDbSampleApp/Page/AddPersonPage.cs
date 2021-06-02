@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CosmosDbSampleApp.Shared;
 using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Markup;
+using Xamarin.Essentials;
 
 namespace CosmosDbSampleApp
 {
@@ -10,6 +11,7 @@ namespace CosmosDbSampleApp
     {
         const string _saveButtonToolBarItemText = "Save";
         const string _cancelButtonToolBarItemText = "Cancel";
+
         readonly AddPersonPageEntry _nameEntry;
         readonly ActivityIndicator _activityIndicator;
 
@@ -80,7 +82,7 @@ namespace CosmosDbSampleApp
         {
             base.OnAppearing();
 
-            Device.BeginInvokeOnMainThread(() => _nameEntry.Focus());
+            MainThread.BeginInvokeOnMainThread(() => _nameEntry.Focus());
         }
 
         async void HandleCancelButtonToolbarItemClicked(object sender, EventArgs e)
@@ -93,11 +95,11 @@ namespace CosmosDbSampleApp
 
         void HandleError(object sender, string message)
         {
-            Device.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", message, "ok"));
+            MainThread.BeginInvokeOnMainThread(async () => await DisplayAlert("Error", message, "ok"));
         }
 
         async void HandleSaveCompleted(object sender, EventArgs e) => await PopPageFromNavigationStack();
 
-        Task PopPageFromNavigationStack() => Device.InvokeOnMainThreadAsync(Navigation.PopModalAsync);
+        Task PopPageFromNavigationStack() => MainThread.InvokeOnMainThreadAsync(Navigation.PopModalAsync);
     }
 }

@@ -8,13 +8,18 @@ namespace CosmosDbSampleApp
 {
     public class AddPersonViewModel : BaseViewModel
     {
-        readonly WeakEventManager _saveCompletedEventManager = new WeakEventManager();
-        readonly WeakEventManager<string> _saveErroredEventManager = new WeakEventManager<string>();
+        readonly WeakEventManager _saveCompletedEventManager = new();
+        readonly WeakEventManager<string> _saveErroredEventManager = new();
 
-        ICommand? _saveButtonCommand;
-        string _ageEntryText = string.Empty,
-            _nameEntryText = string.Empty;
         bool _isBusy;
+
+        string _ageEntryText = string.Empty,
+                _nameEntryText = string.Empty;
+
+        public AddPersonViewModel()
+        {
+            SaveButtonCommand = new AsyncCommand(() => ExecuteSaveButtonCommand(AgeEntryText, NameEntryText));
+        }
 
         public event EventHandler<string> SaveErrored
         {
@@ -28,7 +33,7 @@ namespace CosmosDbSampleApp
             remove => _saveCompletedEventManager.RemoveEventHandler(value);
         }
 
-        public ICommand SaveButtonCommand => _saveButtonCommand ??= new AsyncCommand(() => ExecuteSaveButtonCommand(AgeEntryText, NameEntryText));
+        public ICommand SaveButtonCommand { get; }
 
         public string AgeEntryText
         {

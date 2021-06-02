@@ -10,15 +10,16 @@ namespace CosmosDbSampleApp
 {
     class PersonListViewModel : BaseViewModel
     {
-        readonly WeakEventManager<string> _errorTriggeredEventManager = new WeakEventManager<string>();
+        readonly WeakEventManager<string> _errorTriggeredEventManager = new();
 
         bool _isDeletingPerson, _isRefreshing;
-        ICommand? _pullToRefreshCommand;
 
         public PersonListViewModel()
         {
             //Ensure Observable Collection is Thread Safe https://codetraveler.io/2019/09/11/using-observablecollection-in-a-multi-threaded-xamarin-forms-application/
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(PersonList, null, ObservableCollectionCallback);
+
+            PullToRefreshCommand = new AsyncCommand(UpdatePersonList);
         }
 
         public event EventHandler<string> ErrorTriggered
@@ -27,9 +28,9 @@ namespace CosmosDbSampleApp
             remove => _errorTriggeredEventManager.RemoveEventHandler(value);
         }
 
-        public ICommand PullToRefreshCommand => _pullToRefreshCommand ??= new AsyncCommand(UpdatePersonList);
+        public ICommand PullToRefreshCommand { get; }
 
-        public ObservableCollection<PersonModel> PersonList { get; } = new ObservableCollection<PersonModel>();
+        public ObservableCollection<PersonModel> PersonList { get; } = new();
 
         public bool IsDeletingPerson
         {
@@ -66,7 +67,7 @@ namespace CosmosDbSampleApp
         }
 
         //Ensure Observable Collection is Thread Safe https://codetraveler.io/2019/09/11/using-observablecollection-in-a-multi-threaded-xamarin-forms-application/
-        void ObservableCollectionCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess)
+        void ObservableCollectionCallback(IEnumerable collection, object context, Action? accessMethod, bool writeAccess)
         {
             lock (collection)
             {

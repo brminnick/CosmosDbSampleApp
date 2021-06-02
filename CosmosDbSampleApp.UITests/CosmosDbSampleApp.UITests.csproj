@@ -7,10 +7,7 @@
         <OutputType>Library</OutputType>
         <RootNamespace>CosmosDbSampleApp.UITests</RootNamespace>
         <AssemblyName>CosmosDbSampleApp.UITests</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <LangVersion>8.0</LangVersion>
-        <Nullable>enable</Nullable>
-        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -28,8 +25,8 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="NUnit" Version="3.13.0" />
-        <PackageReference Include="Xamarin.UITest" Version="3.0.13" />
+        <PackageReference Include="NUnit" Version="3.13.2" />
+        <PackageReference Include="Xamarin.UITest" Version="3.0.19" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AppInitializer.cs" />

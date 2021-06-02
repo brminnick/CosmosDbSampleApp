@@ -2,9 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
-        <LangVersion>preview</LangVersion>
     </PropertyGroup>
     <ItemGroup>
         <Folder Include="Constants\" />
@@ -15,10 +12,14 @@
         <Folder Include="Views\" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="5.0.2" />
-        <PackageReference Include="Xamarin.Forms" Version="5.0.0.1905" />
-        <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="1.0.2" />
-        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.16.0" />
+        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="5.1.0" />
+        <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+        <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="1.2.0-pre2" />
+        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.19.0" />
+        <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="Xamarin.Essentials" />
     </ItemGroup>
     <Import Project="..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems" Label="Shared" Condition="Exists('..\CosmosDbSampleApp.Shared\CosmosDbSampleApp.Shared.projitems')" />
 </Project>

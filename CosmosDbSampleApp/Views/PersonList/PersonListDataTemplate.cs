@@ -1,6 +1,5 @@
-using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Markup;
-using static CosmosDbSampleApp.MarkupExtensions;
+using Xamarin.Forms;
 using static Xamarin.CommunityToolkit.Markup.GridRowsColumns;
 
 namespace CosmosDbSampleApp
@@ -16,9 +15,9 @@ namespace CosmosDbSampleApp
             RowSpacing = 1,
 
             RowDefinitions = Rows.Define(
-                (Row.Name, AbsoluteGridLength(20)),
-                (Row.Age, AbsoluteGridLength(20)),
-                (Row.Separator, AbsoluteGridLength(1))),
+                (Row.Name, 20),
+                (Row.Age, 20),
+                (Row.Separator, 1)),
 
             Children =
             {
