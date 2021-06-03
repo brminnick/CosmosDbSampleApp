@@ -1,3 +1,5 @@
+[![Xamarin](https://github.com/brminnick/CosmosDbSampleApp/actions/workflows/mobile.yml/badge.svg)](https://github.com/brminnick/CosmosDbSampleApp/actions/workflows/mobile.yml)
+
 # CosmosDbSampleApp
 
 A Xamarin.iOS and Xamarin.Android app built using Xamarin.Forms that utilizes a [Cosmos DB Backend](https://docs.microsoft.com/azure/cosmos-db/mobile-apps-with-xamarin?WT.mc_id=mobile-0000-bramin).
