@@ -30,7 +30,7 @@ namespace CosmosDbSampleApp
                     .Bind(Label.TextProperty, nameof(PersonModel.Age))
                     .Invoke(detailLabel => detailLabel.Padding = new Thickness(detailLabel.Padding.Left, detailLabel.Padding.Top, detailLabel.Padding.Right, detailLabel.Padding.Bottom + 5)),
 
-                new BoxView { Color = Color.DarkGray }.Margin(5,0)
+                new BoxView { Color = Color.DarkGray }.Margin(5, 0)
                     .Row(Row.Separator)
             }
         };
