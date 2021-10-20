@@ -20,6 +20,13 @@ jobs:
         run: |
           nuget restore
           
+      - name: Inject API Keys
+        run : |
+          AzureConstantsFile=`find . -name DocumentDbConstants.cs | head -1`
+          echo AzureConstantsFile = $AzureConstantsFile
+
+          sed -i '' "s/#error Missing Keys/\/\/#error Missing Keys/g" "$AzureConstantsFile"
+          
       - name: Build Android App
         run: |                    
           mono /Applications/Visual\ studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/MSBuild.dll ./CosmosDbSampleApp.Droid/CosmosDbSampleApp.Droid.csproj /verbosity:normal /p:Configuration=Release
