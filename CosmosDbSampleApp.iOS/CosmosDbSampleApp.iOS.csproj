@@ -96,7 +96,7 @@
         <Reference Include="System.Net.Http" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="6.0.3" />
+        <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="6.0.4" />
         <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
         <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.23.1" />
         <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.23.0" />
