@@ -97,7 +97,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="6.0.4" />
-        <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
+        <PackageReference Include="Xamarin.Forms" Version="5.0.0.2337" />
         <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.23.1" />
         <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.23.0" />
         <PackageReference Include="Xamarin.Essentials" Version="1.7.1" />
@@ -130,6 +130,7 @@
         <ProjectReference Include="..\CosmosDbSampleApp\CosmosDbSampleApp.csproj">
             <Project>{8B5DFD00-56B2-4D23-8548-900514AE289E}</Project>
             <Name>CosmosDbSampleApp</Name>
+            <ReferenceSourceTarget></ReferenceSourceTarget>
         </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
